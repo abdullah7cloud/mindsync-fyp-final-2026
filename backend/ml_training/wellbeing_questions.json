@@ -1,0 +1,72 @@
+{
+  "Study_Hours": {
+    "label": "How many hours do you study on a normal day?",
+    "help": "Outside lectures, on average.",
+    "unit": "hours per day",
+    "tip": "Long study days with no breaks can pile up. Try blocks of about 25-50 minutes with short breaks."
+  },
+  "Class_Attendance": {
+    "label": "What percentage of your classes do you attend?",
+    "help": "Over the semester, from 0 to 100.",
+    "unit": "% of classes",
+    "tip": "Missing many classes can make catching up stressful. If something is stopping you, talk to your tutor early."
+  },
+  "Exam_Frequency": {
+    "label": "How often do you have exams or tests? (1 = rarely, 9 = very often)",
+    "help": "Your own rating on a 1-9 scale.",
+    "unit": "out of 9",
+    "tip": "Put every exam date in MindSync so busy weeks are visible early."
+  },
+  "Assignment_Load": {
+    "label": "How heavy is your assignment workload? (1 = light, 9 = very heavy)",
+    "help": "Your own rating on a 1-9 scale.",
+    "unit": "out of 9",
+    "tip": "Break big assignments into small tasks with their own deadlines."
+  },
+  "Sleep_Hours": {
+    "label": "How many hours do you sleep on a normal night?",
+    "help": "Average over the last few weeks.",
+    "unit": "hours per night",
+    "tip": "Regular sleep is one of the most reliable ways to cope with a heavy workload."
+  },
+  "Social_Media_Use": {
+    "label": "How many hours a day do you spend on social media?",
+    "help": "Your best estimate.",
+    "unit": "hours per day",
+    "tip": "Notice when scrolling replaces a break you actually needed."
+  },
+  "Screen_Time": {
+    "label": "How many hours a day are you in front of a screen in total?",
+    "help": "Phone, laptop, TV and games together.",
+    "unit": "hours per day",
+    "tip": "Look away from screens for a few minutes every hour."
+  },
+  "Physical_Exercise": {
+    "label": "Do you exercise regularly?",
+    "help": "The dataset recorded this as a Yes/No answer.",
+    "unit": "",
+    "tip": "Even a short walk between study blocks can help.",
+    "options": {
+      "Yes": "Yes",
+      "No": "No"
+    }
+  },
+  "Peer_Pressure": {
+    "label": "How much pressure do you feel from your classmates or friends? (1 = none, 9 = a lot)",
+    "help": "Your own rating on a 1-9 scale.",
+    "unit": "out of 9",
+    "tip": "Comparing yourself with others rarely shows the full picture. Focus on your own plan."
+  },
+  "Family_Support": {
+    "label": "How supported do you feel by your family? (1 = not at all, 9 = completely)",
+    "help": "Your own rating on a 1-9 scale.",
+    "unit": "out of 9",
+    "tip": "If support at home is low, a friend, tutor or student services can fill part of that gap."
+  },
+  "Anxiety_Level": {
+    "label": "How anxious do you usually feel? (1 = calm, 9 = very anxious)",
+    "help": "Your own rating on a 1-9 scale.",
+    "unit": "out of 9",
+    "tip": "If anxiety is getting in the way of daily life, please talk to someone you trust or a counsellor."
+  }
+}

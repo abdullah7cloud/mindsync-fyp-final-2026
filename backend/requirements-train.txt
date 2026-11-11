@@ -1,0 +1,6 @@
+# Only needed to RE-TRAIN the model offline. The running web app does NOT need these.
+-r requirements.txt
+numpy>=1.26
+pandas>=2.0
+scikit-learn>=1.4
+aiosmtpd>=1.4,<2.0

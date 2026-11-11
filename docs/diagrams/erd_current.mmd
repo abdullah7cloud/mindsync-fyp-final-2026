@@ -1,0 +1,184 @@
+erDiagram
+  ai_usage {
+    uuid id PK
+    uuid user_id FK
+    string purpose
+    string provider
+    string model
+    integer input_tokens
+    integer output_tokens
+    float cost_usd
+    integer latency_ms
+    string outcome
+    datetime created_at
+  }
+  energy_checkins {
+    uuid id PK
+    uuid user_id FK
+    integer energy_level
+    datetime created_at
+  }
+  password_reset_tokens {
+    uuid id PK
+    uuid user_id FK
+    string token_hash
+    datetime expires_at
+    datetime used_at
+    datetime created_at
+  }
+  plan_sessions {
+    uuid id PK
+    uuid plan_id FK
+    uuid user_id FK
+    uuid task_id FK
+    date day
+    integer position
+    integer minutes
+    integer break_after
+    string label
+    string method
+    string start_hint
+    string status
+  }
+  recommendation_feedback {
+    uuid id PK
+    uuid user_id FK
+    boolean helpful
+    integer energy_level
+    integer difficulty
+    float hours_left
+    boolean burnout_mode
+    datetime created_at
+  }
+  reminder_log {
+    uuid id PK
+    uuid user_id FK
+    uuid task_id FK
+    string kind
+    string dedupe_key
+    string status
+    integer attempts
+    string detail
+    datetime created_at
+  }
+  session_logs {
+    uuid id PK
+    uuid user_id FK
+    string kind
+    integer minutes
+    boolean completed
+    integer focus
+    datetime created_at
+  }
+  study_plans {
+    uuid id PK
+    uuid user_id FK
+    string status
+    string reason
+    json summary
+    json inputs
+    datetime created_at
+  }
+  task_meta {
+    uuid task_id PK
+    uuid user_id FK
+    string kind
+    float intrinsic_difficulty
+    float personal_difficulty
+    integer est_low
+    integer est_likely
+    integer est_high
+    integer done_minutes
+    json stages
+    json extra
+    string source
+    integer priority
+    datetime updated_at
+  }
+  task_outcomes {
+    uuid id PK
+    uuid user_id FK
+    string kind
+    integer raw_minutes
+    integer actual_minutes
+    integer felt
+    float predicted_personal
+    datetime created_at
+  }
+  task_sessions {
+    uuid id PK
+    uuid user_id FK
+    uuid task_id FK
+    uuid plan_session_id
+    string kind
+    integer planned_minutes
+    integer actual_minutes
+    boolean completed
+    integer focus
+    integer felt_difficulty
+    integer energy_after
+    string length_feel
+    datetime created_at
+  }
+  tasks {
+    uuid id PK
+    uuid owner_id FK
+    string title
+    string description
+    string category
+    integer difficulty
+    datetime deadline
+    string status
+    datetime created_at
+    datetime reminder_sent_at
+    datetime updated_at
+    datetime completed_at
+  }
+  user_profiles {
+    uuid user_id PK
+    json data
+    datetime updated_at
+  }
+  user_settings {
+    uuid user_id PK
+    json data
+    datetime updated_at
+  }
+  user_skills {
+    uuid user_id PK
+    string kind PK
+    integer level
+    datetime updated_at
+  }
+  users {
+    uuid id PK
+    string email
+    string password_hash
+    string display_name
+    datetime created_at
+    boolean email_alerts
+  }
+  weekly_reviews {
+    uuid id PK
+    uuid user_id FK
+    date week_start
+    json stats
+    string text
+    string source
+    datetime created_at
+  }
+  wellbeing_checks {
+    uuid id PK
+    uuid user_id FK
+    json answers
+    string risk_label
+    json probabilities
+    string model_version
+    datetime created_at
+  }
+  study_plans ||--o{ plan_sessions : "plan_id"
+  tasks ||--o{ plan_sessions : "task_id"
+  tasks ||--o{ reminder_log : "task_id"
+  tasks ||--o{ task_meta : "task_id"
+  tasks ||--o{ task_sessions : "task_id"
+  users ||--o{ tasks : "owner_id"

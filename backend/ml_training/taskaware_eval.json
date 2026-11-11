@@ -1,0 +1,313 @@
+{
+ "e1_e6_differentiation_and_repetition": {
+  "tasks": 10,
+  "baseline_distinct_session_lengths": 2,
+  "new_distinct_session_lengths": 15,
+  "baseline_distinct_break_lengths": 1,
+  "new_distinct_break_lengths": 2,
+  "baseline_stdev_session_minutes": 4.4,
+  "new_stdev_session_minutes": 16.7,
+  "baseline_share_sessions_followed_by_break": 0.67,
+  "new_share_sessions_followed_by_break": 0.81,
+  "mean_stage_set_difference_between_tasks_new": 0.94,
+  "baseline_stage_types": 1,
+  "new_stage_types": 28,
+  "admin_task_scheduled_breaks": 0,
+  "baseline_total_minutes_for_web_app": 50,
+  "new_total_minutes_for_web_app": 450
+ },
+ "e2_e3_skill_and_size": {
+  "skill_ratio_beginner_over_expert_new": [
+   2.29,
+   2.29,
+   2.31,
+   2.25,
+   2.24
+  ],
+  "skill_ratio_baseline": [
+   1.0,
+   1.0,
+   1.0,
+   1.0,
+   1.0
+  ],
+  "size": [
+   {
+    "task": "Essay",
+    "inputs": [
+     "500 words",
+     "2000 words",
+     "5000 words"
+    ],
+    "new_minutes": [
+     105,
+     425,
+     1050
+    ],
+    "baseline_minutes": [
+     50,
+     50,
+     50
+    ],
+    "new_ratio_large_to_small": 10.0,
+    "baseline_ratio_large_to_small": 1.0
+   },
+   {
+    "task": "Read",
+    "inputs": [
+     "10 pages",
+     "50 pages",
+     "200 pages"
+    ],
+    "new_minutes": [
+     35,
+     175,
+     700
+    ],
+    "baseline_minutes": [
+     50,
+     50,
+     50
+    ],
+    "new_ratio_large_to_small": 20.0,
+    "baseline_ratio_large_to_small": 1.0
+   },
+   {
+    "task": "Problem set",
+    "inputs": [
+     "4 problems",
+     "12 problems",
+     "40 problems"
+    ],
+    "new_minutes": [
+     55,
+     165,
+     565
+    ],
+    "baseline_minutes": [
+     50,
+     50,
+     50
+    ],
+    "new_ratio_large_to_small": 10.3,
+    "baseline_ratio_large_to_small": 1.0
+   },
+   {
+    "task": "Slides",
+    "inputs": [
+     "5 slides",
+     "12 slides",
+     "30 slides"
+    ],
+    "new_minutes": [
+     130,
+     315,
+     780
+    ],
+    "baseline_minutes": [
+     50,
+     50,
+     50
+    ],
+    "new_ratio_large_to_small": 6.0,
+    "baseline_ratio_large_to_small": 1.0
+   }
+  ]
+ },
+ "e4_clarification": {
+  "vague_inputs": 14,
+  "specific_inputs": 10,
+  "new_asked_on_vague": 14,
+  "new_asked_on_vague_rate": 1.0,
+  "new_unnecessary_questions_on_specific": 0,
+  "new_unnecessary_question_rate": 0.0,
+  "max_questions_in_one_round": 3,
+  "baseline_asked_on_vague_rate": 0.0,
+  "baseline_false_confidence_rate_on_vague": 1.0
+ },
+ "e5_history_simulation": {
+  "students_per_cell": 300,
+  "true_multipliers": [
+   0.6,
+   1.0,
+   1.5,
+   2.0,
+   3.0
+  ],
+  "history_sizes": [
+   0,
+   1,
+   2,
+   3,
+   5,
+   8,
+   12
+  ],
+  "mape_percent": {
+   "0.6": {
+    "0": {
+     "raw_mape": 75.2,
+     "new_mape": 75.2
+    },
+    "1": {
+     "raw_mape": 73.8,
+     "new_mape": 54.6
+    },
+    "2": {
+     "raw_mape": 68.5,
+     "new_mape": 40.6
+    },
+    "3": {
+     "raw_mape": 73.6,
+     "new_mape": 38.9
+    },
+    "5": {
+     "raw_mape": 75.7,
+     "new_mape": 34.1
+    },
+    "8": {
+     "raw_mape": 74.2,
+     "new_mape": 28.5
+    },
+    "12": {
+     "raw_mape": 73.9,
+     "new_mape": 25.7
+    }
+   },
+   "1.0": {
+    "0": {
+     "raw_mape": 20.1,
+     "new_mape": 20.1
+    },
+    "1": {
+     "raw_mape": 20.6,
+     "new_mape": 21.4
+    },
+    "2": {
+     "raw_mape": 20.0,
+     "new_mape": 21.0
+    },
+    "3": {
+     "raw_mape": 21.0,
+     "new_mape": 21.8
+    },
+    "5": {
+     "raw_mape": 20.7,
+     "new_mape": 22.2
+    },
+    "8": {
+     "raw_mape": 18.9,
+     "new_mape": 19.7
+    },
+    "12": {
+     "raw_mape": 19.2,
+     "new_mape": 20.1
+    }
+   },
+   "1.5": {
+    "0": {
+     "raw_mape": 33.5,
+     "new_mape": 33.5
+    },
+    "1": {
+     "raw_mape": 32.0,
+     "new_mape": 27.2
+    },
+    "2": {
+     "raw_mape": 32.7,
+     "new_mape": 23.6
+    },
+    "3": {
+     "raw_mape": 31.9,
+     "new_mape": 22.5
+    },
+    "5": {
+     "raw_mape": 32.2,
+     "new_mape": 21.1
+    },
+    "8": {
+     "raw_mape": 32.7,
+     "new_mape": 22.2
+    },
+    "12": {
+     "raw_mape": 32.9,
+     "new_mape": 20.5
+    }
+   },
+   "2.0": {
+    "0": {
+     "raw_mape": 48.5,
+     "new_mape": 48.5
+    },
+    "1": {
+     "raw_mape": 46.2,
+     "new_mape": 36.9
+    },
+    "2": {
+     "raw_mape": 49.4,
+     "new_mape": 34.9
+    },
+    "3": {
+     "raw_mape": 47.6,
+     "new_mape": 27.6
+    },
+    "5": {
+     "raw_mape": 48.7,
+     "new_mape": 24.5
+    },
+    "8": {
+     "raw_mape": 48.2,
+     "new_mape": 22.4
+    },
+    "12": {
+     "raw_mape": 49.6,
+     "new_mape": 22.2
+    }
+   },
+   "3.0": {
+    "0": {
+     "raw_mape": 65.2,
+     "new_mape": 65.2
+    },
+    "1": {
+     "raw_mape": 64.4,
+     "new_mape": 54.9
+    },
+    "2": {
+     "raw_mape": 65.3,
+     "new_mape": 49.5
+    },
+    "3": {
+     "raw_mape": 66.0,
+     "new_mape": 45.0
+    },
+    "5": {
+     "raw_mape": 66.2,
+     "new_mape": 38.4
+    },
+    "8": {
+     "raw_mape": 65.6,
+     "new_mape": 31.3
+    },
+    "12": {
+     "raw_mape": 66.4,
+     "new_mape": 29.1
+    }
+   }
+  },
+  "outlier_after_5_normal_factor_change_percent": 1.1,
+  "single_5x_session_factor": 1.28
+ },
+ "e7_e8_constraints_and_reproducibility": {
+  "scenarios": 140,
+  "constraint_violations": 0,
+  "flagged_infeasible": 72,
+  "wrongly_flagged_infeasible_with_ample_room": 0,
+  "reproducible_runs": 140
+ },
+ "e9_ranking": {
+  "constructed_cases": 25,
+  "baseline_correct": 10,
+  "new_correct": 25
+ }
+}

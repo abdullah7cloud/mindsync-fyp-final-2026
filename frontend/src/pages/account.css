@@ -1,0 +1,57 @@
+/* My Profile and Settings (Update 28). Uses the shared colour variables, so light, dark and the chosen accent colour all apply. */
+.p28-wrap { display: flex; flex-direction: column; gap: 1rem; max-width: 46rem; }
+.p28-card { animation: p28-in 0.35s ease both; display: flex; flex-direction: column; gap: 0.8rem; }
+.p28-card:nth-child(2) { animation-delay: 0.04s; } .p28-card:nth-child(3) { animation-delay: 0.08s; } .p28-card:nth-child(4) { animation-delay: 0.12s; }
+@keyframes p28-in { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: none; } }
+@media (prefers-reduced-motion: reduce) { .p28-card, .p28-switch-track, .p28-switch-track::after { animation: none !important; transition: none !important; } }
+.p28-card h2 { margin: 0; font-size: 1.1rem; }
+.p28-card form { display: flex; flex-direction: column; gap: 0.7rem; }
+.p28-row { display: flex; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.p28-saved { color: var(--success); font-weight: 700; font-size: 0.9rem; display: inline-flex; align-items: center; gap: 0.3rem; }
+.p28-saved svg { flex: none; }
+.p28-avatar { border-radius: 50%; object-fit: cover; display: inline-grid; place-items: center; flex: none; background: var(--primary-soft); }
+.p28-avatar-initial { color: var(--primary-dark); font-weight: 800; border: 2px solid var(--primary-soft); }
+.p28-avatar-xl { border: 3px solid var(--primary-soft); box-shadow: var(--shadow-sm); }
+.p28-file { position: absolute; width: 1px; height: 1px; opacity: 0; overflow: hidden; }
+.p28-filebtn { display: inline-flex; align-items: center; gap: 0.4rem; cursor: pointer; }
+.p28-filebtn:focus-within { outline: 3px solid var(--primary); outline-offset: 2px; }
+.p28-code { font-size: 1.4rem; letter-spacing: 0.35em; text-align: center; max-width: 12rem; font-variant-numeric: tabular-nums; }
+.p28-pending { background: var(--tint); border-radius: var(--radius-sm); padding: 0.8rem 0.95rem; display: flex; flex-direction: column; gap: 0.6rem; }
+.p28-current { overflow-wrap: anywhere; font-weight: 700; }
+.p28-pw-rules { list-style: none; margin: 0; padding: 0; display: flex; gap: 0.3rem 1rem; flex-wrap: wrap; font-size: 0.82rem; color: var(--muted); }
+.p28-pw-rules .ok { color: var(--success); }
+/* appearance choices */
+.p28-themes { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: 0.7rem; border: 0; padding: 0; margin: 0; }
+.p28-theme { position: relative; display: flex; flex-direction: column; gap: 0.5rem; padding: 0.6rem; border: 2px solid var(--border); border-radius: var(--radius-sm); cursor: pointer; background: var(--card); font-weight: 700; transition: border-color 0.2s, box-shadow 0.2s, transform 0.2s; }
+.p28-theme:hover { transform: translateY(-1px); box-shadow: var(--shadow-sm); }
+.p28-theme input { position: absolute; opacity: 0; inset: 0; margin: 0; cursor: pointer; }
+.p28-theme:has(input:checked) { border-color: var(--primary); box-shadow: 0 0 0 3px var(--primary-soft); }
+.p28-theme:has(input:focus-visible) { outline: 3px solid var(--primary); outline-offset: 2px; }
+.p28-swatch { height: 3.2rem; border-radius: 8px; border: 1px solid var(--border); display: block; }
+.p28-swatch.light { background: linear-gradient(135deg, #ffffff 0 60%, #3b55d9 60% 70%, #f6f7fb 70%); }
+.p28-swatch.dark { background: linear-gradient(135deg, #141a33 0 60%, #8ea2ff 60% 70%, #0d1224 70%); }
+.p28-swatch.system { background: linear-gradient(110deg, #ffffff 0 50%, #141a33 50%); }
+@media (max-width: 480px) { .p28-themes { grid-template-columns: 1fr; } .p28-swatch { height: 2rem; } }
+/* switch */
+.p28-switch { display: flex; align-items: center; gap: 0.8rem; cursor: pointer; font-weight: 700; margin: 0; }
+.p28-switch input { position: absolute; opacity: 0; width: 1px; height: 1px; }
+.p28-switch-track { position: relative; width: 2.9rem; height: 1.65rem; border-radius: 999px; background: var(--tint-2); border: 1px solid var(--border-strong); flex: none; transition: background 0.2s; }
+.p28-switch-track::after { content: ""; position: absolute; top: 2px; left: 2px; width: 1.25rem; height: 1.25rem; border-radius: 50%; background: var(--surface); box-shadow: var(--shadow-sm); transition: transform 0.2s; }
+.p28-switch input:checked + .p28-switch-track { background: var(--primary); border-color: var(--primary); }
+.p28-switch input:checked + .p28-switch-track::after { transform: translateX(1.25rem); }
+.p28-switch input:focus-visible + .p28-switch-track { outline: 3px solid var(--primary); outline-offset: 2px; }
+.p28-choice { display: flex; gap: 0.6rem; flex-wrap: wrap; border: 0; padding: 0; margin: 0; }
+.p28-choice label { display: inline-flex; align-items: center; gap: 0.45rem; border: 1.5px solid var(--border); border-radius: 999px; padding: 0.45rem 0.95rem; cursor: pointer; font-weight: 700; margin: 0; }
+.p28-choice label:has(input:checked) { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-dark); }
+.p28-choice label:has(input:focus-visible) { outline: 3px solid var(--primary); outline-offset: 2px; }
+.p28-choice input { width: auto; margin: 0; }
+.p28-example { background: var(--honest-bg); border-radius: var(--radius-sm); padding: 0.7rem 0.9rem; font-size: 0.92rem; line-height: 1.5; }
+.p28-off { opacity: 0.55; pointer-events: none; }
+/* account menu links (in the existing "My account" window) */
+.acct-links { display: flex; gap: 0.6rem; flex-wrap: wrap; margin: 0.4rem 0 0.2rem; }
+.acct-links a { display: inline-flex; align-items: center; gap: 0.5rem; padding: 0.6rem 1rem; border-radius: var(--radius-sm); border: 1.5px solid var(--border); background: var(--card); color: var(--primary-dark); font-weight: 700; text-decoration: none; transition: border-color 0.2s, background 0.2s, transform 0.2s; }
+.acct-links a:hover { border-color: var(--primary); background: var(--primary-soft); transform: translateY(-1px); }
+.acct-links a:focus-visible { outline: 3px solid var(--primary); outline-offset: 2px; }
+.greeting-button { display: inline-flex; align-items: center; gap: 0.5rem; }
+.p28-who { display: flex; align-items: center; gap: 0.55rem; justify-content: center; }
+.p28-who span { overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }

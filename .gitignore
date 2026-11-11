@@ -1,0 +1,84 @@
+# ============================================================
+# MindSync .gitignore - keeps secrets, personal data and junk OUT of GitHub
+# ============================================================
+
+# --- SECRETS: passwords, Gemini keys, Gmail App Passwords, JWT secret ---
+.env
+.env.*
+!.env.example
+**/.env
+**/.env.*
+!**/.env.example
+*.pem
+*.key
+*.p12
+*.pfx
+secrets/
+secret*.txt
+*password*.txt
+*apikey*
+*api_key*.txt
+
+# --- Databases and personal data ---
+*.sqlite
+*.sqlite3
+*.db
+*.sql.gz
+*.dump
+*.bak
+backend/data/
+backend/outbox/
+*.eml
+uploads/
+backend/uploads/
+backend/avatars/
+
+# --- Logs ---
+*.log
+logs/
+backend/logs/
+
+# --- Backups and old versions ---
+_update_backup/
+MindSync_ARCHIVE*/
+*backup*/
+*.zip
+*.7z
+*.rar
+*.tar
+*.tar.gz
+
+# --- Python ---
+.venv/
+venv/
+env/
+__pycache__/
+*.py[cod]
+.pytest_cache/
+.mypy_cache/
+.ruff_cache/
+.coverage
+htmlcov/
+
+# --- Node / website build ---
+node_modules/
+frontend/dist/
+dist/
+.vite/
+npm-debug.log*
+
+# --- Test output and temporary files ---
+e2e/screenshots/
+e2e/output/
+tmp/
+temp/
+*.tmp
+*.temp
+
+# --- Editor and system files ---
+.vscode/
+.idea/
+.DS_Store
+Thumbs.db
+desktop.ini
+~$*

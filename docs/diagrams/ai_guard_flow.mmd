@@ -1,0 +1,16 @@
+flowchart TD
+  A[Student types a task or a question] --> B{OpenAI key in backend .env?}
+  B -- no --> L[Local rules and own trained models]
+  B -- yes --> C{Student allows AI in Settings?}
+  C -- no --> L
+  C -- yes --> D{Guest?}
+  D -- yes, default --> L
+  D -- no --> E{Daily cap 40 and monthly budget OK?}
+  E -- no --> L
+  E -- yes --> F[Call OpenAI, strict JSON schema, max 25 s]
+  F --> G{Valid? schema, numbers supported by facts, no links, markup, key-like or instruction text not typed by the student}
+  G -- no, timeout, error --> L
+  G -- yes --> H[Use the wording, record tokens and cost in ai_usage]
+  L --> S[Deterministic scheduler decides minutes, order, feasibility]
+  H --> S
+  S --> R[Report shows source: rules or AI]

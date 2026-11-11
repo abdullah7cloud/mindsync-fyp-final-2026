@@ -1,0 +1,84 @@
+{
+  "n_samples": 20000,
+  "split_rows": {
+    "train": 12000,
+    "validation": 4000,
+    "test": 4000
+  },
+  "positive_rate": 0.5605,
+  "feature_names": [
+    "difficulty",
+    "energy",
+    "gap",
+    "abs_gap",
+    "log_hours_left",
+    "overdue"
+  ],
+  "validation_set_results": {
+    "logistic_regression_C=0.01": {
+      "roc_auc": 0.7287,
+      "accuracy": 0.6967,
+      "brier": 0.2009
+    },
+    "logistic_regression_C=0.1": {
+      "roc_auc": 0.7288,
+      "accuracy": 0.6967,
+      "brier": 0.2008
+    },
+    "logistic_regression_C=1.0": {
+      "roc_auc": 0.7288,
+      "accuracy": 0.6967,
+      "brier": 0.2008
+    },
+    "logistic_regression_C=10.0": {
+      "roc_auc": 0.7288,
+      "accuracy": 0.6967,
+      "brier": 0.2008
+    },
+    "mlp_4_hidden": {
+      "roc_auc": 0.7182,
+      "accuracy": 0.6903,
+      "brier": 0.2057
+    },
+    "mlp_8_hidden": {
+      "roc_auc": 0.726,
+      "accuracy": 0.6953,
+      "brier": 0.2013
+    },
+    "mlp_16_hidden": {
+      "roc_auc": 0.7268,
+      "accuracy": 0.6955,
+      "brier": 0.2017
+    },
+    "gradient_boosting_reference": {
+      "roc_auc": 0.7253,
+      "accuracy": 0.6933,
+      "brier": 0.2019
+    }
+  },
+  "chosen_by_validation": "logistic_regression_C=0.1",
+  "test_set_results": {
+    "shipped_model": {
+      "roc_auc": 0.7225,
+      "accuracy": 0.6863,
+      "brier": 0.205
+    },
+    "existing_heuristic_baseline": {
+      "roc_auc": 0.5808,
+      "accuracy": 0.474,
+      "brier": 0.2996
+    },
+    "gradient_boosting_reference": {
+      "roc_auc": 0.7162,
+      "accuracy": 0.6855,
+      "brier": 0.2062
+    }
+  },
+  "cross_validation_roc_auc": {
+    "mean": 0.7246,
+    "std": 0.0092,
+    "folds": 5
+  },
+  "shipped_model": "logistic_regression",
+  "note": "Labels are simulated from stated assumptions; scores show the pipeline works, not real-world accuracy."
+}

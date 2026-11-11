@@ -1,0 +1,63 @@
+/* My Tasks. Uses the shared colour variables, so light, dark and the chosen accent colour all apply. */
+.mt-summary { display: grid; grid-template-columns: auto 1fr; gap: 1.25rem; align-items: center; }
+@media (max-width: 640px) { .mt-summary { grid-template-columns: 1fr; justify-items: start; } }
+.mt-summary-body { display: flex; flex-direction: column; gap: 0.7rem; min-width: 0; }
+.mt-summary h2 { margin: 0; font-size: 1.35rem; }
+.mt-ring { margin: 0; display: flex; flex-direction: column; align-items: center; gap: 0.25rem; }
+.mt-ring figcaption { font-size: 0.75rem; color: var(--muted); max-width: 7rem; text-align: center; }
+.mt-ring-bg { fill: none; stroke: var(--tint-2); stroke-width: 10; }
+.mt-ring-fg { fill: none; stroke: var(--primary); stroke-width: 10; stroke-linecap: round; transition: stroke-dasharray 0.5s ease; }
+.mt-ring-text { font-size: 20px; font-weight: 800; fill: var(--text); }
+.mt-bar { height: 0.6rem; border-radius: 999px; background: var(--tint-2); overflow: hidden; }
+.mt-bar span { display: block; height: 100%; background: var(--primary); border-radius: 999px; transition: width 0.4s ease; }
+.mt-bar-bad span { background: var(--danger); }
+.mt-blocks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.mt-block { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; align-items: flex-start; background: var(--card); border: 1px solid var(--border); border-left: 5px solid var(--border-strong); border-radius: var(--radius-sm); padding: 0.85rem 1rem; box-shadow: var(--shadow-sm); }
+.mt-block.st-done { border-left-color: var(--success); }
+.mt-block.st-partial, .mt-block.st-delayed { border-left-color: var(--warning); }
+.mt-block.st-not_done, .mt-block.st-missed, .mt-block.is-overdue { border-left-color: var(--danger); }
+.mt-block-main { flex: 1 1 18rem; min-width: 0; display: flex; flex-direction: column; gap: 0.3rem; }
+.mt-block-top { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.mt-block-title { font-size: 1rem; overflow-wrap: anywhere; }
+.mt-block-meta { display: flex; flex-wrap: wrap; gap: 0.2rem 0.9rem; font-size: 0.82rem; color: var(--muted); }
+.mt-block-how { font-size: 0.85rem; color: var(--muted); line-height: 1.5; }
+.mt-block-actions { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+.mt-block-actions button { display: inline-flex; align-items: center; gap: 0.35rem; }
+.mt-more { position: relative; }
+.mt-more summary { cursor: pointer; font-weight: 700; font-size: 0.85rem; color: var(--primary-dark); padding: 0.45rem 0.6rem; list-style: none; border-radius: 8px; }
+.mt-more summary::-webkit-details-marker { display: none; }
+.mt-more-menu { position: absolute; right: 0; z-index: 5; min-width: 9rem; display: flex; flex-direction: column; align-items: flex-start; gap: 0.2rem; background: var(--surface); border: 1px solid var(--border-strong); border-radius: var(--radius-sm); padding: 0.4rem 0.7rem; box-shadow: var(--shadow-md); }
+.mt-more-menu .danger-link { color: var(--pill-bad-text); }
+.mt-days { display: flex; flex-direction: column; gap: 0.6rem; }
+.mt-day { background: var(--card); border: 1px solid var(--border); border-radius: var(--radius-sm); padding: 0.2rem 0.9rem 0.8rem; }
+.mt-day.is-today { border-color: var(--primary); box-shadow: 0 0 0 2px var(--primary-soft); }
+.mt-day summary { cursor: pointer; display: flex; justify-content: space-between; flex-wrap: wrap; gap: 0.3rem 1rem; padding: 0.7rem 0; list-style: none; }
+.mt-day summary::-webkit-details-marker { display: none; }
+.mt-day summary span { color: var(--muted); font-size: 0.85rem; }
+.mt-choices { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+.mt-choices label { display: inline-flex; align-items: center; gap: 0.4rem; border: 1.5px solid var(--border-strong); border-radius: 999px; padding: 0.4rem 0.9rem; cursor: pointer; font-weight: 600; }
+.mt-choices label.on { border-color: var(--primary); background: var(--primary-soft); color: var(--primary-dark); }
+.mt-choices input { accent-color: var(--primary); }
+.mt-deadlines { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.9rem; }
+.mt-dl-head { display: flex; flex-wrap: wrap; gap: 0.3rem 0.7rem; align-items: center; }
+.mt-sub { color: var(--muted); font-size: 0.85rem; }
+.mt-rem-head { display: flex; justify-content: space-between; gap: 1rem; align-items: center; flex-wrap: wrap; }
+.mt-rem-head h2 { margin: 0; display: flex; gap: 0.6rem; align-items: center; }
+.mt-rem-list { list-style: none; margin: 0.6rem 0 0; padding: 0; display: flex; flex-direction: column; gap: 0.6rem; }
+.mt-rem-list li { display: flex; justify-content: space-between; gap: 1rem; flex-wrap: wrap; align-items: flex-start; background: var(--primary-soft); border-radius: var(--radius-sm); padding: 0.7rem 0.9rem; }
+.mt-rem-list li.is-read { background: var(--tint); opacity: 0.85; }
+.mt-rem-list p { font-size: 0.88rem; color: var(--muted); line-height: 1.5; margin-top: 0.15rem; }
+.mt-preview { padding-left: 1.1rem; display: flex; flex-direction: column; gap: 0.4rem; line-height: 1.55; }
+.mt-empty { display: flex; flex-direction: column; gap: 0.8rem; align-items: flex-start; }
+.mt-history summary { cursor: pointer; font-weight: 700; }
+@media (prefers-reduced-motion: reduce) { .mt-ring-fg, .mt-bar span { transition: none; } }
+:root[data-motion="reduce"] .mt-ring-fg, :root[data-motion="reduce"] .mt-bar span { transition: none; }
+.mt-bar-soft span { background: var(--primary-soft); box-shadow: inset 0 0 0 1.5px var(--primary); }
+.rp-top { display: grid; grid-template-columns: auto 1fr; gap: 1.2rem; align-items: center; }
+@media (max-width: 640px) { .rp-top { grid-template-columns: 1fr; justify-items: start; } }
+.rp-weeks { list-style: none; margin: 0; padding: 0; display: flex; flex-direction: column; gap: 0.7rem; }
+.rp-weeks li { display: grid; grid-template-columns: 8rem 1fr 7.5rem; gap: 0.8rem; align-items: center; font-size: 0.85rem; }
+@media (max-width: 640px) { .rp-weeks li { grid-template-columns: 1fr; gap: 0.3rem; } }
+.rp-pair { display: flex; flex-direction: column; gap: 0.3rem; }
+.rp-week-name { font-weight: 700; }
+.rp-week-num { color: var(--muted); font-size: 0.78rem; line-height: 1.4; }

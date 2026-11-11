@@ -1,0 +1,9628 @@
+{
+ "openapi": "3.1.0",
+ "info": {
+  "title": "MindSync API",
+  "description": "Study task management API: a local heuristic plus locally trained models (task fit, wellbeing / stress risk). No external AI service is used. See the project report for the full system design.",
+  "version": "0.7.0"
+ },
+ "paths": {
+  "/auth/register": {
+   "post": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Register",
+    "operationId": "register_auth_register_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UserRegister"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Token"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/auth/login": {
+   "post": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Login",
+    "operationId": "login_auth_login_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UserLogin"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Token"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/auth/me": {
+   "get": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Me",
+    "operationId": "me_auth_me_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/UserOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/auth/forgot-password": {
+   "post": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Forgot Password",
+    "operationId": "forgot_password_auth_forgot_password_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ForgotPassword"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Message"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/auth/reset-password": {
+   "post": {
+    "tags": [
+     "auth"
+    ],
+    "summary": "Reset Password",
+    "operationId": "reset_password_auth_reset_password_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ResetPassword"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/Message"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/account/export": {
+   "get": {
+    "tags": [
+     "account"
+    ],
+    "summary": "Export My Data",
+    "description": "Everything stored about the logged-in user. The password hash is deliberately NOT included.",
+    "operationId": "export_my_data_account_export_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Export My Data Account Export Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/account/wellbeing": {
+   "delete": {
+    "tags": [
+     "account"
+    ],
+    "summary": "Delete Wellbeing History",
+    "description": "Remove all wellbeing results and daily mood check-ins (also ends any Burnout Mode that was triggered by one).",
+    "operationId": "delete_wellbeing_history_account_wellbeing_delete",
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/account/password": {
+   "post": {
+    "tags": [
+     "account"
+    ],
+    "summary": "Change Password",
+    "description": "Change the password while logged in. The current password is asked for again (a stolen login token alone is not enough).",
+    "operationId": "change_password_account_password_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ChangePassword"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/account/email": {
+   "post": {
+    "tags": [
+     "account"
+    ],
+    "summary": "Change Email",
+    "description": "Change the e-mail used to sign in. The current password is asked for again, and wrong passwords count towards the same lock-out.\nNo confirmation e-mail is sent in this version (e-mail delivery is not switched on), so the password check is the safeguard.",
+    "operationId": "change_email_account_email_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ChangeEmail"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Change Email Account Email Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/account": {
+   "delete": {
+    "tags": [
+     "account"
+    ],
+    "summary": "Delete Account",
+    "operationId": "delete_account_account_delete",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DeleteAccount"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/feedback": {
+   "post": {
+    "tags": [
+     "feedback"
+    ],
+    "summary": "Add Feedback",
+    "operationId": "add_feedback_feedback_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/FeedbackCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Add Feedback Feedback Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/feedback/summary": {
+   "get": {
+    "tags": [
+     "feedback"
+    ],
+    "summary": "Feedback Summary",
+    "operationId": "feedback_summary_feedback_summary_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/FeedbackSummary"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/tasks": {
+   "get": {
+    "tags": [
+     "tasks"
+    ],
+    "summary": "List Tasks",
+    "operationId": "list_tasks_tasks_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/TaskOut"
+         },
+         "type": "array",
+         "title": "Response List Tasks Tasks Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "tasks"
+    ],
+    "summary": "Create Task",
+    "operationId": "create_task_tasks_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TaskCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TaskOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/tasks/{task_id}": {
+   "get": {
+    "tags": [
+     "tasks"
+    ],
+    "summary": "Get Task",
+    "operationId": "get_task_tasks__task_id__get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "task_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Task Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TaskOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "tasks"
+    ],
+    "summary": "Update Task",
+    "operationId": "update_task_tasks__task_id__patch",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "task_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Task Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TaskUpdate"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/TaskOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "tasks"
+    ],
+    "summary": "Delete Task",
+    "operationId": "delete_task_tasks__task_id__delete",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "task_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Task Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/energy-checkins": {
+   "get": {
+    "tags": [
+     "energy"
+    ],
+    "summary": "List Checkins",
+    "operationId": "list_checkins_energy_checkins_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/EnergyCheckinOut"
+         },
+         "type": "array",
+         "title": "Response List Checkins Energy Checkins Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "energy"
+    ],
+    "summary": "Create Checkin",
+    "operationId": "create_checkin_energy_checkins_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EnergyCheckinCreate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/EnergyCheckinOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/recommend": {
+   "get": {
+    "tags": [
+     "recommend"
+    ],
+    "summary": "Recommend",
+    "operationId": "recommend_recommend_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RecommendationOut"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/planner/plan": {
+   "post": {
+    "tags": [
+     "study planner"
+    ],
+    "summary": "Plan",
+    "operationId": "plan_planner_plan_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PlanRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PlanResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/wellbeing/model": {
+   "get": {
+    "tags": [
+     "wellbeing check"
+    ],
+    "summary": "Model Info",
+    "description": "Public: the questionnaire plus the model card (training data, metrics, limitations).",
+    "operationId": "model_info_wellbeing_model_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Model Info Wellbeing Model Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/wellbeing/assess": {
+   "post": {
+    "tags": [
+     "wellbeing check"
+    ],
+    "summary": "Assess",
+    "operationId": "assess_wellbeing_assess_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AssessIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AssessOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/wellbeing/history": {
+   "get": {
+    "tags": [
+     "wellbeing check"
+    ],
+    "summary": "History",
+    "operationId": "history_wellbeing_history_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "items": {
+          "$ref": "#/components/schemas/HistoryItem"
+         },
+         "type": "array",
+         "title": "Response History Wellbeing History Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/models/status": {
+   "get": {
+    "tags": [
+     "models"
+    ],
+    "summary": "Models Status",
+    "operationId": "models_status_models_status_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Models Status Models Status Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/notifications/status": {
+   "get": {
+    "tags": [
+     "notifications"
+    ],
+    "summary": "Alert Status",
+    "operationId": "alert_status_notifications_status_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AlertStatus"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/notifications/settings": {
+   "patch": {
+    "tags": [
+     "notifications"
+    ],
+    "summary": "Update Settings",
+    "operationId": "update_settings_notifications_settings_patch",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AlertSettingsUpdate"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AlertStatus"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/notifications/test": {
+   "post": {
+    "tags": [
+     "notifications"
+    ],
+    "summary": "Send Test",
+    "operationId": "send_test_notifications_test_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Send Test Notifications Test Post"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/notifications/check-now": {
+   "post": {
+    "tags": [
+     "notifications"
+    ],
+    "summary": "Check Now",
+    "description": "Runs the deadline check for the signed-in user right now (also what the background job does).",
+    "operationId": "check_now_notifications_check_now_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RunResult"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/demo/recommend": {
+   "post": {
+    "tags": [
+     "demo (guest mode)"
+    ],
+    "summary": "Demo Recommend",
+    "operationId": "demo_recommend_demo_recommend_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/DemoRecommendIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/RecommendationOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/planner/plan": {
+   "post": {
+    "tags": [
+     "demo (guest mode)"
+    ],
+    "summary": "Demo Planner",
+    "description": "Study Planner for guests: same engine, nothing stored.",
+    "operationId": "demo_planner_demo_planner_plan_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PlanRequest"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/PlanResponse"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/wellbeing/assess": {
+   "post": {
+    "tags": [
+     "demo (guest mode)"
+    ],
+    "summary": "Demo Wellbeing",
+    "description": "Wellbeing check for guests: the model runs, the result is returned, nothing is stored.",
+    "operationId": "demo_wellbeing_demo_wellbeing_assess_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AssessIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/AssessOut"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/smart/plan": {
+   "post": {
+    "tags": [
+     "task-aware planning"
+    ],
+    "summary": "Smart Plan",
+    "operationId": "smart_plan_smart_plan_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SmartPlanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Smart Plan Smart Plan Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/smart/outcome": {
+   "post": {
+    "tags": [
+     "task-aware planning"
+    ],
+    "summary": "Add Outcome",
+    "operationId": "add_outcome_smart_outcome_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/OutcomeIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Add Outcome Smart Outcome Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/smart/session": {
+   "post": {
+    "tags": [
+     "task-aware planning"
+    ],
+    "summary": "Add Session",
+    "operationId": "add_session_smart_session_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SessionIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Add Session Smart Session Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/smart/learned": {
+   "get": {
+    "tags": [
+     "task-aware planning"
+    ],
+    "summary": "Learned",
+    "operationId": "learned_smart_learned_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Learned Smart Learned Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/smart/skills/{kind}": {
+   "put": {
+    "tags": [
+     "task-aware planning"
+    ],
+    "summary": "Set Skill",
+    "operationId": "set_skill_smart_skills__kind__put",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "kind",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "enum": [
+        "programming",
+        "mathematics",
+        "writing",
+        "exam",
+        "reading",
+        "presentation",
+        "data",
+        "admin",
+        "general"
+       ],
+       "type": "string",
+       "title": "Kind"
+      }
+     },
+     {
+      "name": "level",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "integer",
+       "title": "Level"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Set Skill Smart Skills  Kind  Put"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/smart/plan": {
+   "post": {
+    "tags": [
+     "task-aware planning (guest mode)"
+    ],
+    "summary": "Demo Smart Plan",
+    "operationId": "demo_smart_plan_demo_smart_plan_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SmartPlanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Smart Plan Demo Smart Plan Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/assist/state": {
+   "get": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "State",
+    "operationId": "state_assist_state_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response State Assist State Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/understand": {
+   "post": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Understand",
+    "operationId": "understand_assist_understand_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/UnderstandIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Understand Assist Understand Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/evaluate": {
+   "post": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Evaluate",
+    "operationId": "evaluate_assist_evaluate_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EvaluateIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Evaluate Assist Evaluate Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/accept": {
+   "post": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Accept",
+    "operationId": "accept_assist_accept_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EvaluateIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Accept Assist Accept Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/form": {
+   "get": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Get Form",
+    "description": "The Smart Planner form as it should look today: subjects and topics rebuilt from the saved tasks, plus what the student chose last time.",
+    "operationId": "get_form_assist_form_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Get Form Assist Form Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/guidance": {
+   "get": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Guidance",
+    "description": "Subject-specific study guidance for the student's open topics. Rule-written, works offline, labelled as such.",
+    "operationId": "guidance_assist_guidance_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Guidance Assist Guidance Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/plan-form": {
+   "post": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Plan Form",
+    "description": "ONE BUTTON. Save the form, work out the minutes, fit them into the student's time and store the plan. No language model is involved,\nso it answers in milliseconds and works offline. Missing key facts come back as at most three questions and nothing is saved.",
+    "operationId": "plan_form_assist_plan_form_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PlanFormIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Plan Form Assist Plan Form Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/replan/apply": {
+   "post": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Replan Apply",
+    "operationId": "replan_apply_assist_replan_apply_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReplanApplyIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Replan Apply Assist Replan Apply Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/session": {
+   "post": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Log Session",
+    "operationId": "log_session_assist_session_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SessionFeedbackIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Log Session Assist Session Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/tasks/{task_id}": {
+   "patch": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Patch Task Plan",
+    "operationId": "patch_task_plan_assist_tasks__task_id__patch",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "task_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Task Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TaskPlanPatch"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Patch Task Plan Assist Tasks  Task Id  Patch"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/assist/explain": {
+   "post": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Explain",
+    "operationId": "explain_assist_explain_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Explain Assist Explain Post"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/ask": {
+   "post": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Ask",
+    "operationId": "ask_assist_ask_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AskIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Ask Assist Ask Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/dashboard": {
+   "get": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Dashboard",
+    "operationId": "dashboard_assist_dashboard_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Dashboard Assist Dashboard Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/review": {
+   "post": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Make Review",
+    "operationId": "make_review_assist_review_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Make Review Assist Review Post"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/usage": {
+   "get": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Usage",
+    "operationId": "usage_assist_usage_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Usage Assist Usage Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/assist/reminders": {
+   "get": {
+    "tags": [
+     "assist (connected planner)"
+    ],
+    "summary": "Reminder History",
+    "operationId": "reminder_history_assist_reminders_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Reminder History Assist Reminders Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/roadmap": {
+   "get": {
+    "tags": [
+     "my tasks (roadmap)"
+    ],
+    "summary": "Get Roadmap",
+    "operationId": "get_roadmap_roadmap_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Get Roadmap Roadmap Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/roadmap/history": {
+   "get": {
+    "tags": [
+     "my tasks (roadmap)"
+    ],
+    "summary": "History",
+    "operationId": "history_roadmap_history_get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "limit",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "integer",
+       "maximum": 200,
+       "minimum": 1,
+       "default": 60,
+       "title": "Limit"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response History Roadmap History Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/roadmap/items/{item_id}/confirm": {
+   "post": {
+    "tags": [
+     "my tasks (roadmap)"
+    ],
+    "summary": "Confirm",
+    "operationId": "confirm_roadmap_items__item_id__confirm_post",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "item_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Item Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ConfirmIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Confirm Roadmap Items  Item Id  Confirm Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/roadmap/items/{item_id}/undo": {
+   "post": {
+    "tags": [
+     "my tasks (roadmap)"
+    ],
+    "summary": "Undo",
+    "operationId": "undo_roadmap_items__item_id__undo_post",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "item_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Item Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Undo Roadmap Items  Item Id  Undo Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/roadmap/items/{item_id}/move": {
+   "post": {
+    "tags": [
+     "my tasks (roadmap)"
+    ],
+    "summary": "Move",
+    "operationId": "move_roadmap_items__item_id__move_post",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "item_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Item Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/MoveIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Move Roadmap Items  Item Id  Move Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/roadmap/items/{item_id}": {
+   "patch": {
+    "tags": [
+     "my tasks (roadmap)"
+    ],
+    "summary": "Edit",
+    "operationId": "edit_roadmap_items__item_id__patch",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "item_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Item Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/EditIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Edit Roadmap Items  Item Id  Patch"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "my tasks (roadmap)"
+    ],
+    "summary": "Remove",
+    "operationId": "remove_roadmap_items__item_id__delete",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "item_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Item Id"
+      }
+     },
+     {
+      "name": "confirm",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Confirm"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Remove Roadmap Items  Item Id  Delete"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/roadmap/items": {
+   "post": {
+    "tags": [
+     "my tasks (roadmap)"
+    ],
+    "summary": "Add",
+    "operationId": "add_roadmap_items_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/AddIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Add Roadmap Items Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/roadmap/replan/preview": {
+   "post": {
+    "tags": [
+     "my tasks (roadmap)"
+    ],
+    "summary": "Replan Preview",
+    "operationId": "replan_preview_roadmap_replan_preview_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Replan Preview Roadmap Replan Preview Post"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/roadmap/replan/apply": {
+   "post": {
+    "tags": [
+     "my tasks (roadmap)"
+    ],
+    "summary": "Replan Apply",
+    "operationId": "replan_apply_roadmap_replan_apply_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReplanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Replan Apply Roadmap Replan Apply Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/demo/assist/roadmap": {
+   "post": {
+    "tags": [
+     "my tasks (guest mode)"
+    ],
+    "summary": "Demo Roadmap",
+    "description": "The same page numbers for a guest: the browser sends its own roadmap, the same pure code answers, nothing is stored here.",
+    "operationId": "demo_roadmap_demo_assist_roadmap_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GuestRoadmapIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Roadmap Demo Assist Roadmap Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/reminders": {
+   "get": {
+    "tags": [
+     "reminders (in the app)"
+    ],
+    "summary": "List Reminders",
+    "operationId": "list_reminders_reminders_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response List Reminders Reminders Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/reminders/{reminder_id}/read": {
+   "post": {
+    "tags": [
+     "reminders (in the app)"
+    ],
+    "summary": "Mark Read",
+    "operationId": "mark_read_reminders__reminder_id__read_post",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "reminder_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Reminder Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Mark Read Reminders  Reminder Id  Read Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/reminders/read-all": {
+   "post": {
+    "tags": [
+     "reminders (in the app)"
+    ],
+    "summary": "Read All",
+    "operationId": "read_all_reminders_read_all_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Read All Reminders Read All Post"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/studio/status": {
+   "get": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "Studio Status",
+    "operationId": "studio_status_studio_status_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Studio Status Studio Status Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/studio/extract": {
+   "post": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "Extract Text",
+    "operationId": "extract_text_studio_extract_post",
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_extract_text_studio_extract_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Extract Text Studio Extract Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/studio/sample": {
+   "post": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "Add Sample",
+    "description": "The hand-written sample. Saved like any pack so quizzes, flashcards and progress behave exactly the same. No AI, no allowance used.",
+    "operationId": "add_sample_studio_sample_post",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Add Sample Studio Sample Post"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/studio/packs": {
+   "get": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "List Packs",
+    "operationId": "list_packs_studio_packs_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response List Packs Studio Packs Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "Create Pack",
+    "description": "The one place the AI is called. Every guard below runs BEFORE any request is sent, so a refused request costs nothing.",
+    "operationId": "create_pack_studio_packs_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/CreatePackIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Create Pack Studio Packs Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/studio/packs/{pack_id}": {
+   "get": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "Get Pack",
+    "operationId": "get_pack_studio_packs__pack_id__get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "pack_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Pack Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Get Pack Studio Packs  Pack Id  Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "Delete Pack",
+    "operationId": "delete_pack_studio_packs__pack_id__delete",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "pack_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Pack Id"
+      }
+     },
+     {
+      "name": "confirm",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "boolean",
+       "default": false,
+       "title": "Confirm"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Delete Pack Studio Packs  Pack Id  Delete"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/studio/packs/{pack_id}/quiz": {
+   "post": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "Start Quiz",
+    "operationId": "start_quiz_studio_packs__pack_id__quiz_post",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "pack_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Pack Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/QuizIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Start Quiz Studio Packs  Pack Id  Quiz Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/studio/packs/{pack_id}/quiz/submit": {
+   "post": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "Submit Quiz",
+    "operationId": "submit_quiz_studio_packs__pack_id__quiz_submit_post",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "pack_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Pack Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/SubmitIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Submit Quiz Studio Packs  Pack Id  Quiz Submit Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/studio/packs/{pack_id}/cards": {
+   "get": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "Get Cards",
+    "operationId": "get_cards_studio_packs__pack_id__cards_get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "pack_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Pack Id"
+      }
+     },
+     {
+      "name": "mode",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "enum": [
+        "due",
+        "all"
+       ],
+       "type": "string",
+       "default": "due",
+       "title": "Mode"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Get Cards Studio Packs  Pack Id  Cards Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/studio/cards/{card_id}/review": {
+   "post": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "Review Card",
+    "operationId": "review_card_studio_cards__card_id__review_post",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "card_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Card Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/ReviewIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Review Card Studio Cards  Card Id  Review Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/studio/packs/{pack_id}/progress": {
+   "get": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "Pack Progress",
+    "operationId": "pack_progress_studio_packs__pack_id__progress_get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "pack_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "title": "Pack Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Pack Progress Studio Packs  Pack Id  Progress Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/studio/summary": {
+   "get": {
+    "tags": [
+     "ai learning studio"
+    ],
+    "summary": "Studio Summary",
+    "operationId": "studio_summary_studio_summary_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Studio Summary Studio Summary Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/demo/studio/sample": {
+   "get": {
+    "tags": [
+     "ai learning studio (guest)"
+    ],
+    "summary": "Demo Sample",
+    "description": "The hand-written sample as public data. A guest's browser marks quizzes and schedules flashcards itself; nothing is stored here.",
+    "operationId": "demo_sample_demo_studio_sample_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Sample Demo Studio Sample Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/assist/form": {
+   "post": {
+    "tags": [
+     "assist (guest mode)"
+    ],
+    "summary": "Demo Form",
+    "operationId": "demo_form_demo_assist_form_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GuestReplanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Form Demo Assist Form Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/assist/guidance": {
+   "post": {
+    "tags": [
+     "assist (guest mode)"
+    ],
+    "summary": "Demo Guidance",
+    "operationId": "demo_guidance_demo_assist_guidance_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GuestReplanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Guidance Demo Assist Guidance Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/assist/plan-form": {
+   "post": {
+    "tags": [
+     "assist (guest mode)"
+    ],
+    "summary": "Demo Plan Form",
+    "description": "The guest twin of /assist/plan-form: it only works out the changes; the browser stores them and then asks for the plan.",
+    "operationId": "demo_plan_form_demo_assist_plan_form_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GuestPlanFormIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Plan Form Demo Assist Plan Form Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/assist/understand": {
+   "post": {
+    "tags": [
+     "assist (guest mode)"
+    ],
+    "summary": "Demo Understand",
+    "operationId": "demo_understand_demo_assist_understand_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GuestUnderstandIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Understand Demo Assist Understand Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/assist/evaluate": {
+   "post": {
+    "tags": [
+     "assist (guest mode)"
+    ],
+    "summary": "Demo Evaluate",
+    "operationId": "demo_evaluate_demo_assist_evaluate_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GuestEvaluateIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Evaluate Demo Assist Evaluate Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/assist/replan-check": {
+   "post": {
+    "tags": [
+     "assist (guest mode)"
+    ],
+    "summary": "Demo Replan Check",
+    "operationId": "demo_replan_check_demo_assist_replan_check_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GuestReplanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Replan Check Demo Assist Replan Check Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/assist/plan": {
+   "post": {
+    "tags": [
+     "assist (guest mode)"
+    ],
+    "summary": "Demo Plan",
+    "description": "Plan all of a guest's pending tasks. Returns the plan plus the snapshot the browser must keep for later checks.",
+    "operationId": "demo_plan_demo_assist_plan_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GuestReplanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Plan Demo Assist Plan Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/assist/explain": {
+   "post": {
+    "tags": [
+     "assist (guest mode)"
+    ],
+    "summary": "Demo Explain",
+    "operationId": "demo_explain_demo_assist_explain_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GuestReplanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Explain Demo Assist Explain Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/assist/ask": {
+   "post": {
+    "tags": [
+     "assist (guest mode)"
+    ],
+    "summary": "Demo Ask",
+    "operationId": "demo_ask_demo_assist_ask_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GuestAskIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Ask Demo Assist Ask Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/assist/dashboard": {
+   "post": {
+    "tags": [
+     "assist (guest mode)"
+    ],
+    "summary": "Demo Dashboard",
+    "operationId": "demo_dashboard_demo_assist_dashboard_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GuestDashboardIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Dashboard Demo Assist Dashboard Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/demo/assist/review": {
+   "post": {
+    "tags": [
+     "assist (guest mode)"
+    ],
+    "summary": "Demo Review",
+    "operationId": "demo_review_demo_assist_review_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/GuestDashboardIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Demo Review Demo Assist Review Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/settings": {
+   "get": {
+    "tags": [
+     "settings and profile"
+    ],
+    "summary": "Get Settings",
+    "operationId": "get_settings_settings_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Get Settings Settings Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   },
+   "put": {
+    "tags": [
+     "settings and profile"
+    ],
+    "summary": "Put Settings",
+    "operationId": "put_settings_settings_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "additionalProperties": true,
+        "type": "object",
+        "title": "Patch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Put Settings Settings Put"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/profile": {
+   "get": {
+    "tags": [
+     "settings and profile"
+    ],
+    "summary": "Get Profile",
+    "operationId": "get_profile_profile_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Get Profile Profile Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   },
+   "put": {
+    "tags": [
+     "settings and profile"
+    ],
+    "summary": "Put Profile",
+    "operationId": "put_profile_profile_put",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "additionalProperties": true,
+        "type": "object",
+        "title": "Patch"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Put Profile Profile Put"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/study/plans": {
+   "get": {
+    "tags": [
+     "study planner"
+    ],
+    "summary": "List Plans",
+    "operationId": "list_plans_study_plans_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response List Plans Study Plans Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "study planner"
+    ],
+    "summary": "Create Plan",
+    "operationId": "create_plan_study_plans_post",
+    "requestBody": {
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PlanIn"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Create Plan Study Plans Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/study/plans/{plan_id}": {
+   "patch": {
+    "tags": [
+     "study planner"
+    ],
+    "summary": "Edit Plan",
+    "operationId": "edit_plan_study_plans__plan_id__patch",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "plan_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Plan Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/PlanPatch"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Edit Plan Study Plans  Plan Id  Patch"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "study planner"
+    ],
+    "summary": "Delete Plan",
+    "operationId": "delete_plan_study_plans__plan_id__delete",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "plan_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Plan Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/study/tasks/{task_id}": {
+   "patch": {
+    "tags": [
+     "study planner"
+    ],
+    "summary": "Edit Task",
+    "operationId": "edit_task_study_tasks__task_id__patch",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "task_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Task Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/TaskPatch"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Edit Task Study Tasks  Task Id  Patch"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "study planner"
+    ],
+    "summary": "Delete Task",
+    "operationId": "delete_task_study_tasks__task_id__delete",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "task_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Task Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/study/dashboard": {
+   "get": {
+    "tags": [
+     "study planner"
+    ],
+    "summary": "Dashboard",
+    "operationId": "dashboard_study_dashboard_get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "tz",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "maxLength": 64,
+       "default": "UTC",
+       "title": "Tz"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Dashboard Study Dashboard Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/notebook/notes": {
+   "get": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "List Notes",
+    "operationId": "list_notes_notebook_notes_get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "q",
+      "in": "query",
+      "required": false,
+      "schema": {
+       "type": "string",
+       "maxLength": 100,
+       "default": "",
+       "title": "Q"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response List Notes Notebook Notes Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "post": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "Create Note",
+    "operationId": "create_note_notebook_notes_post",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NoteIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Create Note Notebook Notes Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/notebook/notes/{note_id}": {
+   "get": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "Get Note",
+    "operationId": "get_note_notebook_notes__note_id__get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "note_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Note Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Get Note Notebook Notes  Note Id  Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "patch": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "Edit Note",
+    "operationId": "edit_note_notebook_notes__note_id__patch",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "note_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Note Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/NotePatch"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Edit Note Notebook Notes  Note Id  Patch"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "Delete Note",
+    "operationId": "delete_note_notebook_notes__note_id__delete",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "note_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Note Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/notebook/notes/{note_id}/download": {
+   "get": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "Download Note",
+    "operationId": "download_note_notebook_notes__note_id__download_get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "note_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Note Id"
+      }
+     },
+     {
+      "name": "format",
+      "in": "query",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "pattern": "^(pdf|docx)$",
+       "title": "Format"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/notebook/documents": {
+   "get": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "List Documents",
+    "operationId": "list_documents_notebook_documents_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response List Documents Notebook Documents Get"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   },
+   "post": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "Upload Document",
+    "operationId": "upload_document_notebook_documents_post",
+    "requestBody": {
+     "content": {
+      "multipart/form-data": {
+       "schema": {
+        "$ref": "#/components/schemas/Body_upload_document_notebook_documents_post"
+       }
+      }
+     },
+     "required": true
+    },
+    "responses": {
+     "201": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Upload Document Notebook Documents Post"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    },
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ]
+   }
+  },
+  "/notebook/documents/{doc_id}": {
+   "patch": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "Rename Document",
+    "operationId": "rename_document_notebook_documents__doc_id__patch",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "doc_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Doc Id"
+      }
+     }
+    ],
+    "requestBody": {
+     "required": true,
+     "content": {
+      "application/json": {
+       "schema": {
+        "$ref": "#/components/schemas/RenameIn"
+       }
+      }
+     }
+    },
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Rename Document Notebook Documents  Doc Id  Patch"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   },
+   "delete": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "Delete Document",
+    "operationId": "delete_document_notebook_documents__doc_id__delete",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "doc_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Doc Id"
+      }
+     }
+    ],
+    "responses": {
+     "204": {
+      "description": "Successful Response"
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/notebook/documents/{doc_id}/download": {
+   "get": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "Download Document",
+    "operationId": "download_document_notebook_documents__doc_id__download_get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "doc_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Doc Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/notebook/documents/{doc_id}/view": {
+   "get": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "View Document",
+    "operationId": "view_document_notebook_documents__doc_id__view_get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "doc_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Doc Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {}
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/notebook/documents/{doc_id}/text": {
+   "get": {
+    "tags": [
+     "notebook"
+    ],
+    "summary": "Document Text",
+    "description": "The readable text of a document: shown when viewing Word or PowerPoint files and used to make a quiz.",
+    "operationId": "document_text_notebook_documents__doc_id__text_get",
+    "security": [
+     {
+      "HTTPBearer": []
+     }
+    ],
+    "parameters": [
+     {
+      "name": "doc_id",
+      "in": "path",
+      "required": true,
+      "schema": {
+       "type": "string",
+       "format": "uuid",
+       "title": "Doc Id"
+      }
+     }
+    ],
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "type": "object",
+         "additionalProperties": true,
+         "title": "Response Document Text Notebook Documents  Doc Id  Text Get"
+        }
+       }
+      }
+     },
+     "422": {
+      "description": "Validation Error",
+      "content": {
+       "application/json": {
+        "schema": {
+         "$ref": "#/components/schemas/HTTPValidationError"
+        }
+       }
+      }
+     }
+    }
+   }
+  },
+  "/health": {
+   "get": {
+    "tags": [
+     "health"
+    ],
+    "summary": "Health",
+    "operationId": "health_health_get",
+    "responses": {
+     "200": {
+      "description": "Successful Response",
+      "content": {
+       "application/json": {
+        "schema": {
+         "additionalProperties": true,
+         "type": "object",
+         "title": "Response Health Health Get"
+        }
+       }
+      }
+     }
+    }
+   }
+  }
+ },
+ "components": {
+  "schemas": {
+   "AddIn": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Title"
+     },
+     "subject": {
+      "type": "string",
+      "maxLength": 100,
+      "minLength": 1,
+      "title": "Subject",
+      "default": "My other tasks"
+     },
+     "minutes": {
+      "type": "integer",
+      "maximum": 600.0,
+      "minimum": 5.0,
+      "title": "Minutes"
+     },
+     "day": {
+      "type": "string",
+      "format": "date",
+      "title": "Day"
+     },
+     "label": {
+      "type": "string",
+      "maxLength": 200,
+      "title": "Label",
+      "default": "My own study block"
+     },
+     "method": {
+      "type": "string",
+      "maxLength": 400,
+      "title": "Method",
+      "default": ""
+     },
+     "task_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Task Id"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "title",
+     "minutes",
+     "day"
+    ],
+    "title": "AddIn"
+   },
+   "AiEstimate": {
+    "properties": {
+     "low": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 6000.0,
+        "minimum": 5.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Low"
+     },
+     "likely": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 6000.0,
+        "minimum": 5.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Likely"
+     },
+     "high": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 6000.0,
+        "minimum": 5.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "High"
+     }
+    },
+    "type": "object",
+    "title": "AiEstimate"
+   },
+   "AlertSettingsUpdate": {
+    "properties": {
+     "email_alerts": {
+      "type": "boolean",
+      "title": "Email Alerts"
+     }
+    },
+    "type": "object",
+    "required": [
+     "email_alerts"
+    ],
+    "title": "AlertSettingsUpdate"
+   },
+   "AlertStatus": {
+    "properties": {
+     "email_alerts": {
+      "type": "boolean",
+      "title": "Email Alerts"
+     },
+     "hours_before": {
+      "type": "integer",
+      "title": "Hours Before"
+     },
+     "delivery_mode": {
+      "type": "string",
+      "title": "Delivery Mode"
+     },
+     "email": {
+      "type": "string",
+      "title": "Email"
+     },
+     "lead_hours": {
+      "items": {
+       "type": "integer"
+      },
+      "type": "array",
+      "title": "Lead Hours",
+      "default": []
+     },
+     "same_day": {
+      "type": "boolean",
+      "title": "Same Day",
+      "default": false
+     },
+     "overdue": {
+      "type": "boolean",
+      "title": "Overdue",
+      "default": false
+     },
+     "timezone": {
+      "type": "string",
+      "title": "Timezone",
+      "default": "UTC"
+     },
+     "delivery_note": {
+      "type": "string",
+      "title": "Delivery Note",
+      "default": ""
+     }
+    },
+    "type": "object",
+    "required": [
+     "email_alerts",
+     "hours_before",
+     "delivery_mode",
+     "email"
+    ],
+    "title": "AlertStatus"
+   },
+   "AnswerIn": {
+    "properties": {
+     "question_id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Question Id"
+     },
+     "chosen": {
+      "type": "integer",
+      "maximum": 3.0,
+      "minimum": 0.0,
+      "title": "Chosen"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "question_id",
+     "chosen"
+    ],
+    "title": "AnswerIn"
+   },
+   "AskIn": {
+    "properties": {
+     "question": {
+      "type": "string",
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Question"
+     }
+    },
+    "type": "object",
+    "required": [
+     "question"
+    ],
+    "title": "AskIn"
+   },
+   "AssessIn": {
+    "properties": {
+     "answers": {
+      "additionalProperties": true,
+      "type": "object",
+      "maxProperties": 40,
+      "title": "Answers"
+     }
+    },
+    "type": "object",
+    "required": [
+     "answers"
+    ],
+    "title": "AssessIn"
+   },
+   "AssessOut": {
+    "properties": {
+     "label": {
+      "type": "string",
+      "title": "Label"
+     },
+     "probabilities": {
+      "additionalProperties": {
+       "type": "number"
+      },
+      "type": "object",
+      "title": "Probabilities"
+     },
+     "confidence": {
+      "type": "number",
+      "title": "Confidence"
+     },
+     "factors_up": {
+      "items": {
+       "$ref": "#/components/schemas/Factor"
+      },
+      "type": "array",
+      "title": "Factors Up"
+     },
+     "factors_down": {
+      "items": {
+       "$ref": "#/components/schemas/Factor"
+      },
+      "type": "array",
+      "title": "Factors Down"
+     },
+     "model_version": {
+      "type": "string",
+      "title": "Model Version"
+     },
+     "disclaimer": {
+      "type": "string",
+      "title": "Disclaimer",
+      "default": "This estimate applies the scoring rule of a public student-survey dataset to your answers. It is not a medical or psychological diagnosis and it does not predict burnout. If you feel unwell or overwhelmed, please talk to someone you trust, your university's student support or your doctor."
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "label",
+     "probabilities",
+     "confidence",
+     "factors_up",
+     "factors_down",
+     "model_version"
+    ],
+    "title": "AssessOut"
+   },
+   "AvailabilityIn": {
+    "properties": {
+     "daily_minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 720.0,
+        "minimum": 15.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Daily Minutes"
+     },
+     "day_minutes": {
+      "anyOf": [
+       {
+        "additionalProperties": {
+         "type": "integer"
+        },
+        "type": "object"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Day Minutes"
+     },
+     "preferred_time": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "morning",
+         "afternoon",
+         "evening",
+         "night",
+         "flexible"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Preferred Time"
+     },
+     "unavailable_periods": {
+      "anyOf": [
+       {
+        "items": {
+         "type": "string",
+         "enum": [
+          "morning",
+          "afternoon",
+          "evening",
+          "night"
+         ]
+        },
+        "type": "array"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Unavailable Periods"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "AvailabilityIn"
+   },
+   "Body_extract_text_studio_extract_post": {
+    "properties": {
+     "file": {
+      "type": "string",
+      "contentMediaType": "application/octet-stream",
+      "title": "File"
+     }
+    },
+    "type": "object",
+    "required": [
+     "file"
+    ],
+    "title": "Body_extract_text_studio_extract_post"
+   },
+   "Body_upload_document_notebook_documents_post": {
+    "properties": {
+     "file": {
+      "type": "string",
+      "contentMediaType": "application/octet-stream",
+      "title": "File"
+     }
+    },
+    "type": "object",
+    "required": [
+     "file"
+    ],
+    "title": "Body_upload_document_notebook_documents_post"
+   },
+   "ChangeEmail": {
+    "properties": {
+     "new_email": {
+      "type": "string",
+      "format": "email",
+      "title": "New Email"
+     },
+     "password": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Password"
+     }
+    },
+    "type": "object",
+    "required": [
+     "new_email",
+     "password"
+    ],
+    "title": "ChangeEmail"
+   },
+   "ChangePassword": {
+    "properties": {
+     "current_password": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Current Password"
+     },
+     "new_password": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 8,
+      "title": "New Password"
+     }
+    },
+    "type": "object",
+    "required": [
+     "current_password",
+     "new_password"
+    ],
+    "title": "ChangePassword"
+   },
+   "ConfirmIn": {
+    "properties": {
+     "status": {
+      "type": "string",
+      "enum": [
+       "done",
+       "partial",
+       "not_done",
+       "delayed"
+      ],
+      "title": "Status"
+     },
+     "actual_minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 600.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Actual Minutes"
+     },
+     "felt": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "easy",
+         "okay",
+         "difficult"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Felt"
+     },
+     "remaining_minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 6000.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Remaining Minutes"
+     },
+     "new_day": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "New Day"
+     },
+     "note": {
+      "type": "string",
+      "maxLength": 200,
+      "title": "Note",
+      "default": ""
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "status"
+    ],
+    "title": "ConfirmIn"
+   },
+   "CreatePackIn": {
+    "properties": {
+     "text": {
+      "type": "string",
+      "maxLength": 200000,
+      "minLength": 1,
+      "title": "Text"
+     },
+     "title": {
+      "type": "string",
+      "maxLength": 120,
+      "title": "Title",
+      "default": ""
+     },
+     "source_name": {
+      "type": "string",
+      "maxLength": 200,
+      "title": "Source Name",
+      "default": ""
+     },
+     "consent": {
+      "type": "boolean",
+      "title": "Consent",
+      "default": false
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "text"
+    ],
+    "title": "CreatePackIn"
+   },
+   "DeleteAccount": {
+    "properties": {
+     "password": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Password"
+     }
+    },
+    "type": "object",
+    "required": [
+     "password"
+    ],
+    "title": "DeleteAccount",
+    "description": "Deleting an account needs the password again, so a stolen token cannot erase everything."
+   },
+   "DemoRecommendIn": {
+    "properties": {
+     "tasks": {
+      "items": {
+       "$ref": "#/components/schemas/TaskOut"
+      },
+      "type": "array",
+      "maxItems": 60,
+      "title": "Tasks"
+     },
+     "recent_energy": {
+      "items": {
+       "type": "integer"
+      },
+      "type": "array",
+      "maxItems": 5,
+      "title": "Recent Energy"
+     },
+     "stress_risk": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^(Low|Medium|High)$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Stress Risk"
+     },
+     "skills": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "propertyNames": {
+       "enum": [
+        "programming",
+        "mathematics",
+        "writing",
+        "exam",
+        "reading",
+        "presentation",
+        "data",
+        "admin",
+        "general"
+       ]
+      },
+      "type": "object",
+      "title": "Skills"
+     },
+     "history": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/HistoryIn"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object",
+    "required": [
+     "tasks"
+    ],
+    "title": "DemoRecommendIn"
+   },
+   "DraftIn": {
+    "properties": {
+     "ref": {
+      "type": "string",
+      "maxLength": 40,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Ref"
+     },
+     "title": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Title"
+     },
+     "details": {
+      "type": "string",
+      "maxLength": 2000,
+      "title": "Details",
+      "default": ""
+     },
+     "deadline_date": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Deadline Date"
+     },
+     "deadline_hour": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 23.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Deadline Hour"
+     },
+     "kind": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "programming",
+         "mathematics",
+         "writing",
+         "exam",
+         "reading",
+         "presentation",
+         "data",
+         "admin",
+         "general"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Kind"
+     },
+     "felt_hard": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Felt Hard"
+     },
+     "answers": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Answers"
+     },
+     "ai_estimate": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/AiEstimate"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "subtasks": {
+      "items": {
+       "$ref": "#/components/schemas/SubtaskIn"
+      },
+      "type": "array",
+      "maxItems": 8,
+      "title": "Subtasks"
+     },
+     "priority": {
+      "type": "integer",
+      "maximum": 3.0,
+      "minimum": 1.0,
+      "title": "Priority",
+      "default": 2
+     }
+    },
+    "type": "object",
+    "required": [
+     "ref",
+     "title"
+    ],
+    "title": "DraftIn"
+   },
+   "EditIn": {
+    "properties": {
+     "title": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "subject": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 100,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Subject"
+     },
+     "label": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Label"
+     },
+     "method": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 400
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Method"
+     },
+     "minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 600.0,
+        "minimum": 5.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Minutes"
+     },
+     "day": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Day"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "EditIn"
+   },
+   "EnergyCheckinCreate": {
+    "properties": {
+     "energy_level": {
+      "type": "integer",
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Energy Level"
+     }
+    },
+    "type": "object",
+    "required": [
+     "energy_level"
+    ],
+    "title": "EnergyCheckinCreate"
+   },
+   "EnergyCheckinOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "energy_level": {
+      "type": "integer",
+      "title": "Energy Level"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "energy_level",
+     "created_at"
+    ],
+    "title": "EnergyCheckinOut"
+   },
+   "EvaluateIn": {
+    "properties": {
+     "drafts": {
+      "items": {
+       "$ref": "#/components/schemas/DraftIn"
+      },
+      "type": "array",
+      "maxItems": 40,
+      "title": "Drafts"
+     },
+     "today_minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 720.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Today Minutes"
+     }
+    },
+    "type": "object",
+    "title": "EvaluateIn"
+   },
+   "Factor": {
+    "properties": {
+     "feature": {
+      "type": "string",
+      "title": "Feature"
+     },
+     "label": {
+      "type": "string",
+      "title": "Label"
+     },
+     "value": {
+      "type": "string",
+      "title": "Value"
+     },
+     "effect": {
+      "type": "number",
+      "title": "Effect"
+     },
+     "tip": {
+      "type": "string",
+      "title": "Tip",
+      "default": ""
+     }
+    },
+    "type": "object",
+    "required": [
+     "feature",
+     "label",
+     "value",
+     "effect"
+    ],
+    "title": "Factor"
+   },
+   "FeedbackCreate": {
+    "properties": {
+     "helpful": {
+      "type": "boolean",
+      "title": "Helpful"
+     },
+     "energy_level": {
+      "type": "integer",
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Energy Level"
+     },
+     "difficulty": {
+      "type": "integer",
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Difficulty"
+     },
+     "hours_left": {
+      "type": "number",
+      "maximum": 8760.0,
+      "minimum": -8760.0,
+      "title": "Hours Left"
+     },
+     "burnout_mode": {
+      "type": "boolean",
+      "title": "Burnout Mode",
+      "default": false
+     }
+    },
+    "type": "object",
+    "required": [
+     "helpful",
+     "energy_level",
+     "difficulty",
+     "hours_left"
+    ],
+    "title": "FeedbackCreate",
+    "description": "Situation numbers only (no task text) plus the student's yes/no answer."
+   },
+   "FeedbackSummary": {
+    "properties": {
+     "total": {
+      "type": "integer",
+      "title": "Total"
+     },
+     "helpful": {
+      "type": "integer",
+      "title": "Helpful"
+     },
+     "helpful_percent": {
+      "anyOf": [
+       {
+        "type": "number"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Helpful Percent"
+     }
+    },
+    "type": "object",
+    "required": [
+     "total",
+     "helpful"
+    ],
+    "title": "FeedbackSummary"
+   },
+   "FeelingsIn": {
+    "properties": {
+     "mood": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "happy",
+         "calm",
+         "okay",
+         "tired",
+         "worried",
+         "stressed",
+         "sad",
+         "frustrated",
+         "overwhelmed"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Mood"
+     },
+     "energy": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "low",
+         "medium",
+         "high"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Energy"
+     },
+     "stress": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "low",
+         "medium",
+         "high"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Stress"
+     },
+     "focus": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "difficult",
+         "okay",
+         "focused"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Focus"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "FeelingsIn"
+   },
+   "ForgotPassword": {
+    "properties": {
+     "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email"
+     }
+    },
+    "type": "object",
+    "required": [
+     "email"
+    ],
+    "title": "ForgotPassword"
+   },
+   "GuestActivePlan": {
+    "properties": {
+     "inputs": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Inputs"
+     },
+     "future": {
+      "items": {
+       "$ref": "#/components/schemas/GuestPlanSession"
+      },
+      "type": "array",
+      "maxItems": 400,
+      "title": "Future"
+     },
+     "past": {
+      "items": {
+       "$ref": "#/components/schemas/GuestPlanSession"
+      },
+      "type": "array",
+      "maxItems": 400,
+      "title": "Past"
+     }
+    },
+    "type": "object",
+    "required": [
+     "inputs"
+    ],
+    "title": "GuestActivePlan"
+   },
+   "GuestAskIn": {
+    "properties": {
+     "question": {
+      "type": "string",
+      "maxLength": 500,
+      "minLength": 1,
+      "title": "Question"
+     },
+     "state": {
+      "$ref": "#/components/schemas/GuestState"
+     }
+    },
+    "type": "object",
+    "required": [
+     "question",
+     "state"
+    ],
+    "title": "GuestAskIn"
+   },
+   "GuestBlock": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "maxLength": 64,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Id"
+     },
+     "task_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 64
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Task Id"
+     },
+     "day": {
+      "type": "string",
+      "format": "date",
+      "title": "Day"
+     },
+     "position": {
+      "type": "integer",
+      "maximum": 1000.0,
+      "minimum": 0.0,
+      "title": "Position",
+      "default": 0
+     },
+     "minutes": {
+      "type": "integer",
+      "maximum": 600.0,
+      "minimum": 5.0,
+      "title": "Minutes"
+     },
+     "actual_minutes": {
+      "type": "integer",
+      "maximum": 600.0,
+      "minimum": 0.0,
+      "title": "Actual Minutes",
+      "default": 0
+     },
+     "break_after": {
+      "type": "integer",
+      "maximum": 60.0,
+      "minimum": 0.0,
+      "title": "Break After",
+      "default": 0
+     },
+     "label": {
+      "type": "string",
+      "maxLength": 200,
+      "title": "Label",
+      "default": ""
+     },
+     "method": {
+      "type": "string",
+      "maxLength": 400,
+      "title": "Method",
+      "default": ""
+     },
+     "start_hint": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 5
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Start Hint"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "planned",
+       "done",
+       "partial",
+       "not_done",
+       "delayed",
+       "skipped",
+       "missed"
+      ],
+      "title": "Status",
+      "default": "planned"
+     },
+     "title": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "subject": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 100
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Subject"
+     },
+     "manual": {
+      "type": "boolean",
+      "title": "Manual",
+      "default": false
+     },
+     "original_day": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Original Day"
+     },
+     "felt": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "easy",
+         "okay",
+         "difficult"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Felt"
+     },
+     "completed_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 40
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Completed At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "day",
+     "minutes"
+    ],
+    "title": "GuestBlock"
+   },
+   "GuestCheckin": {
+    "properties": {
+     "energy_level": {
+      "type": "integer",
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Energy Level"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "energy_level",
+     "created_at"
+    ],
+    "title": "GuestCheckin"
+   },
+   "GuestDashboardIn": {
+    "properties": {
+     "state": {
+      "$ref": "#/components/schemas/GuestState"
+     }
+    },
+    "type": "object",
+    "required": [
+     "state"
+    ],
+    "title": "GuestDashboardIn"
+   },
+   "GuestEvaluateIn": {
+    "properties": {
+     "drafts": {
+      "items": {
+       "$ref": "#/components/schemas/DraftIn"
+      },
+      "type": "array",
+      "maxItems": 40,
+      "title": "Drafts"
+     },
+     "today_minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 720.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Today Minutes"
+     },
+     "state": {
+      "$ref": "#/components/schemas/GuestState"
+     }
+    },
+    "type": "object",
+    "required": [
+     "state"
+    ],
+    "title": "GuestEvaluateIn"
+   },
+   "GuestMeta": {
+    "properties": {
+     "kind": {
+      "type": "string",
+      "enum": [
+       "programming",
+       "mathematics",
+       "writing",
+       "exam",
+       "reading",
+       "presentation",
+       "data",
+       "admin",
+       "general"
+      ],
+      "title": "Kind"
+     },
+     "kind_label": {
+      "type": "string",
+      "maxLength": 60,
+      "title": "Kind Label",
+      "default": ""
+     },
+     "intrinsic": {
+      "type": "number",
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Intrinsic"
+     },
+     "personal": {
+      "type": "number",
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Personal"
+     },
+     "low": {
+      "type": "integer",
+      "maximum": 6000.0,
+      "minimum": 0.0,
+      "title": "Low"
+     },
+     "likely": {
+      "type": "integer",
+      "maximum": 6000.0,
+      "minimum": 0.0,
+      "title": "Likely"
+     },
+     "high": {
+      "type": "integer",
+      "maximum": 6000.0,
+      "minimum": 0.0,
+      "title": "High"
+     },
+     "done": {
+      "type": "integer",
+      "maximum": 6000.0,
+      "minimum": 0.0,
+      "title": "Done",
+      "default": 0
+     },
+     "stages": {
+      "items": {
+       "$ref": "#/components/schemas/GuestMetaStage"
+      },
+      "type": "array",
+      "maxItems": 12,
+      "title": "Stages"
+     },
+     "source": {
+      "type": "string",
+      "enum": [
+       "rules",
+       "ai",
+       "blended"
+      ],
+      "title": "Source",
+      "default": "rules"
+     },
+     "priority": {
+      "type": "integer",
+      "maximum": 3.0,
+      "minimum": 1.0,
+      "title": "Priority",
+      "default": 2
+     },
+     "confidence": {
+      "type": "string",
+      "maxLength": 10,
+      "title": "Confidence",
+      "default": "medium"
+     },
+     "uncertainty": {
+      "type": "number",
+      "maximum": 1.0,
+      "minimum": 0.0,
+      "title": "Uncertainty",
+      "default": 0.3
+     },
+     "difficulty_label": {
+      "type": "string",
+      "maxLength": 40,
+      "title": "Difficulty Label",
+      "default": ""
+     },
+     "difficulty_text": {
+      "type": "string",
+      "maxLength": 400,
+      "title": "Difficulty Text",
+      "default": ""
+     },
+     "workload_text": {
+      "type": "string",
+      "maxLength": 600,
+      "title": "Workload Text",
+      "default": ""
+     },
+     "understanding": {
+      "type": "string",
+      "maxLength": 400,
+      "title": "Understanding",
+      "default": ""
+     },
+     "uncertainties": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "maxItems": 8,
+      "title": "Uncertainties"
+     },
+     "basis": {
+      "type": "string",
+      "maxLength": 20,
+      "title": "Basis",
+      "default": "size"
+     },
+     "size": {
+      "type": "string",
+      "maxLength": 10,
+      "title": "Size",
+      "default": "medium"
+     },
+     "skill_kind": {
+      "type": "string",
+      "maxLength": 20,
+      "title": "Skill Kind",
+      "default": "general"
+     },
+     "topic_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 40
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Topic Id"
+     },
+     "subject": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 60
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Subject"
+     },
+     "task_type": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 20
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Task Type"
+     },
+     "progress": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 10
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Progress"
+     },
+     "grasp": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 4.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Grasp"
+     },
+     "form_sig": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 20
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Form Sig"
+     },
+     "actual_before": {
+      "type": "integer",
+      "maximum": 60000.0,
+      "minimum": 0.0,
+      "title": "Actual Before",
+      "default": 0
+     },
+     "raw_likely": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 60000.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Raw Likely"
+     },
+     "form_desc": {
+      "type": "string",
+      "maxLength": 600,
+      "title": "Form Desc",
+      "default": ""
+     },
+     "details": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Details"
+     }
+    },
+    "type": "object",
+    "required": [
+     "kind",
+     "intrinsic",
+     "personal",
+     "low",
+     "likely",
+     "high",
+     "stages"
+    ],
+    "title": "GuestMeta"
+   },
+   "GuestMetaStage": {
+    "properties": {
+     "work_id": {
+      "type": "string",
+      "maxLength": 40,
+      "title": "Work Id"
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "programming",
+       "mathematics",
+       "writing",
+       "exam",
+       "reading",
+       "presentation",
+       "data",
+       "admin",
+       "general"
+      ],
+      "title": "Kind"
+     },
+     "label": {
+      "type": "string",
+      "maxLength": 120,
+      "title": "Label"
+     },
+     "method": {
+      "type": "string",
+      "maxLength": 300,
+      "title": "Method"
+     },
+     "minutes": {
+      "type": "integer",
+      "maximum": 6000.0,
+      "minimum": 1.0,
+      "title": "Minutes"
+     },
+     "deep": {
+      "type": "boolean",
+      "title": "Deep",
+      "default": true
+     },
+     "session": {
+      "items": {
+       "type": "integer"
+      },
+      "type": "array",
+      "maxItems": 3,
+      "minItems": 3,
+      "title": "Session"
+     },
+     "breaks": {
+      "type": "boolean",
+      "title": "Breaks",
+      "default": true
+     }
+    },
+    "type": "object",
+    "required": [
+     "work_id",
+     "kind",
+     "label",
+     "method",
+     "minutes",
+     "session"
+    ],
+    "title": "GuestMetaStage"
+   },
+   "GuestPlanFormIn": {
+    "properties": {
+     "state": {
+      "$ref": "#/components/schemas/GuestState"
+     },
+     "form": {
+      "$ref": "#/components/schemas/PlanFormIn"
+     }
+    },
+    "type": "object",
+    "required": [
+     "state",
+     "form"
+    ],
+    "title": "GuestPlanFormIn"
+   },
+   "GuestPlanSession": {
+    "properties": {
+     "day": {
+      "type": "string",
+      "format": "date",
+      "title": "Day"
+     },
+     "task_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 64
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Task Id"
+     },
+     "minutes": {
+      "type": "integer",
+      "maximum": 600.0,
+      "minimum": 1.0,
+      "title": "Minutes"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "planned",
+       "done",
+       "skipped"
+      ],
+      "title": "Status",
+      "default": "planned"
+     }
+    },
+    "type": "object",
+    "required": [
+     "day",
+     "minutes"
+    ],
+    "title": "GuestPlanSession"
+   },
+   "GuestReplanIn": {
+    "properties": {
+     "state": {
+      "$ref": "#/components/schemas/GuestState"
+     }
+    },
+    "type": "object",
+    "required": [
+     "state"
+    ],
+    "title": "GuestReplanIn"
+   },
+   "GuestRoadmapIn": {
+    "properties": {
+     "today": {
+      "type": "string",
+      "format": "date",
+      "title": "Today"
+     },
+     "time": {
+      "type": "string",
+      "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$",
+      "title": "Time",
+      "default": "12:00"
+     },
+     "name": {
+      "type": "string",
+      "maxLength": 60,
+      "title": "Name",
+      "default": ""
+     },
+     "settings": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Settings"
+     },
+     "blocks": {
+      "items": {
+       "$ref": "#/components/schemas/GuestBlock"
+      },
+      "type": "array",
+      "maxItems": 1500,
+      "title": "Blocks"
+     },
+     "tasks": {
+      "items": {
+       "$ref": "#/components/schemas/GuestTaskRow"
+      },
+      "type": "array",
+      "maxItems": 60,
+      "title": "Tasks"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "today"
+    ],
+    "title": "GuestRoadmapIn"
+   },
+   "GuestSession": {
+    "properties": {
+     "task_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 64
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Task Id"
+     },
+     "kind": {
+      "type": "string",
+      "enum": [
+       "programming",
+       "mathematics",
+       "writing",
+       "exam",
+       "reading",
+       "presentation",
+       "data",
+       "admin",
+       "general"
+      ],
+      "title": "Kind",
+      "default": "general"
+     },
+     "planned_minutes": {
+      "type": "integer",
+      "maximum": 600.0,
+      "minimum": 0.0,
+      "title": "Planned Minutes",
+      "default": 0
+     },
+     "actual_minutes": {
+      "type": "integer",
+      "maximum": 600.0,
+      "minimum": 1.0,
+      "title": "Actual Minutes"
+     },
+     "completed": {
+      "type": "boolean",
+      "title": "Completed",
+      "default": true
+     },
+     "focus": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Focus"
+     },
+     "felt_difficulty": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Felt Difficulty"
+     },
+     "length_feel": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "short",
+         "right",
+         "long"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Length Feel"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "actual_minutes",
+     "created_at"
+    ],
+    "title": "GuestSession"
+   },
+   "GuestState": {
+    "properties": {
+     "now": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Now"
+     },
+     "settings": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Settings"
+     },
+     "profile": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Profile"
+     },
+     "tasks": {
+      "items": {
+       "$ref": "#/components/schemas/GuestTask"
+      },
+      "type": "array",
+      "maxItems": 60,
+      "title": "Tasks"
+     },
+     "energy": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Energy"
+     },
+     "stress": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "Low",
+         "Medium",
+         "High"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Stress"
+     },
+     "skills": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "propertyNames": {
+       "enum": [
+        "programming",
+        "mathematics",
+        "writing",
+        "exam",
+        "reading",
+        "presentation",
+        "data",
+        "admin",
+        "general"
+       ]
+      },
+      "type": "object",
+      "title": "Skills"
+     },
+     "history": {
+      "$ref": "#/components/schemas/HistoryIn"
+     },
+     "studied_today": {
+      "type": "integer",
+      "maximum": 720.0,
+      "minimum": 0.0,
+      "title": "Studied Today",
+      "default": 0
+     },
+     "task_sessions": {
+      "items": {
+       "$ref": "#/components/schemas/GuestSession"
+      },
+      "type": "array",
+      "maxItems": 300,
+      "title": "Task Sessions"
+     },
+     "checkins": {
+      "items": {
+       "$ref": "#/components/schemas/GuestCheckin"
+      },
+      "type": "array",
+      "maxItems": 60,
+      "title": "Checkins"
+     },
+     "wellbeing": {
+      "items": {
+       "$ref": "#/components/schemas/GuestWellbeing"
+      },
+      "type": "array",
+      "maxItems": 10,
+      "title": "Wellbeing"
+     },
+     "plan_sessions": {
+      "items": {
+       "$ref": "#/components/schemas/GuestPlanSession"
+      },
+      "type": "array",
+      "maxItems": 400,
+      "title": "Plan Sessions"
+     },
+     "active_plan": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/GuestActivePlan"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object",
+    "required": [
+     "now"
+    ],
+    "title": "GuestState"
+   },
+   "GuestTask": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Title"
+     },
+     "description": {
+      "type": "string",
+      "maxLength": 2000,
+      "title": "Description",
+      "default": ""
+     },
+     "category": {
+      "type": "string",
+      "maxLength": 100,
+      "title": "Category",
+      "default": "general"
+     },
+     "difficulty": {
+      "type": "integer",
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Difficulty",
+      "default": 3
+     },
+     "deadline": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Deadline"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "pending",
+       "completed"
+      ],
+      "title": "Status",
+      "default": "pending"
+     },
+     "completed_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Completed At"
+     },
+     "created_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Created At"
+     },
+     "meta": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/GuestMeta"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "deadline"
+    ],
+    "title": "GuestTask"
+   },
+   "GuestTaskRow": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "maxLength": 64,
+      "minLength": 1,
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Title"
+     },
+     "subject": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 100
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Subject"
+     },
+     "deadline": {
+      "type": "string",
+      "format": "date",
+      "title": "Deadline"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "pending",
+       "completed"
+      ],
+      "title": "Status",
+      "default": "pending"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "deadline"
+    ],
+    "title": "GuestTaskRow"
+   },
+   "GuestUnderstandIn": {
+    "properties": {
+     "text": {
+      "type": "string",
+      "maxLength": 3000,
+      "title": "Text",
+      "default": ""
+     },
+     "fields": {
+      "$ref": "#/components/schemas/UnderstandFields"
+     },
+     "today": {
+      "type": "string",
+      "format": "date",
+      "title": "Today"
+     },
+     "time_zone": {
+      "type": "string",
+      "maxLength": 60,
+      "title": "Time Zone",
+      "default": "UTC"
+     },
+     "settings": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Settings"
+     }
+    },
+    "type": "object",
+    "required": [
+     "today"
+    ],
+    "title": "GuestUnderstandIn"
+   },
+   "GuestWellbeing": {
+    "properties": {
+     "label": {
+      "type": "string",
+      "enum": [
+       "Low",
+       "Medium",
+       "High"
+      ],
+      "title": "Label"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "label",
+     "created_at"
+    ],
+    "title": "GuestWellbeing"
+   },
+   "HTTPValidationError": {
+    "properties": {
+     "detail": {
+      "items": {
+       "$ref": "#/components/schemas/ValidationError"
+      },
+      "type": "array",
+      "title": "Detail"
+     }
+    },
+    "type": "object",
+    "title": "HTTPValidationError"
+   },
+   "HistoryIn": {
+    "properties": {
+     "outcomes": {
+      "items": {
+       "$ref": "#/components/schemas/OutcomeIn"
+      },
+      "type": "array",
+      "maxItems": 200,
+      "title": "Outcomes"
+     },
+     "sessions": {
+      "items": {
+       "$ref": "#/components/schemas/SessionIn"
+      },
+      "type": "array",
+      "maxItems": 300,
+      "title": "Sessions"
+     }
+    },
+    "type": "object",
+    "title": "HistoryIn"
+   },
+   "HistoryItem": {
+    "properties": {
+     "label": {
+      "type": "string",
+      "title": "Label"
+     },
+     "probabilities": {
+      "additionalProperties": {
+       "type": "number"
+      },
+      "type": "object",
+      "title": "Probabilities"
+     },
+     "model_version": {
+      "type": "string",
+      "title": "Model Version"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "label",
+     "probabilities",
+     "model_version",
+     "created_at"
+    ],
+    "title": "HistoryItem"
+   },
+   "Message": {
+    "properties": {
+     "message": {
+      "type": "string",
+      "title": "Message"
+     },
+     "delivery": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "email",
+         "demo"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Delivery"
+     }
+    },
+    "type": "object",
+    "required": [
+     "message"
+    ],
+    "title": "Message"
+   },
+   "MoveIn": {
+    "properties": {
+     "day": {
+      "type": "string",
+      "format": "date",
+      "title": "Day"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "day"
+    ],
+    "title": "MoveIn"
+   },
+   "NoteIn": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Title"
+     },
+     "body": {
+      "type": "string",
+      "maxLength": 60000,
+      "title": "Body",
+      "default": ""
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "title"
+    ],
+    "title": "NoteIn"
+   },
+   "NotePatch": {
+    "properties": {
+     "title": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 120,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "body": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 60000
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Body"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "NotePatch"
+   },
+   "OutcomeIn": {
+    "properties": {
+     "kind": {
+      "type": "string",
+      "enum": [
+       "programming",
+       "mathematics",
+       "writing",
+       "exam",
+       "reading",
+       "presentation",
+       "data",
+       "admin",
+       "general"
+      ],
+      "title": "Kind"
+     },
+     "raw_minutes": {
+      "type": "integer",
+      "maximum": 6000.0,
+      "minimum": 1.0,
+      "title": "Raw Minutes"
+     },
+     "actual_minutes": {
+      "type": "integer",
+      "maximum": 6000.0,
+      "minimum": 1.0,
+      "title": "Actual Minutes"
+     },
+     "felt": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Felt"
+     },
+     "predicted_personal": {
+      "anyOf": [
+       {
+        "type": "number",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Predicted Personal"
+     }
+    },
+    "type": "object",
+    "required": [
+     "kind",
+     "raw_minutes",
+     "actual_minutes"
+    ],
+    "title": "OutcomeIn"
+   },
+   "PlanFormIn": {
+    "properties": {
+     "subjects": {
+      "items": {
+       "$ref": "#/components/schemas/SubjectIn"
+      },
+      "type": "array",
+      "maxItems": 12,
+      "title": "Subjects"
+     },
+     "availability": {
+      "$ref": "#/components/schemas/AvailabilityIn"
+     },
+     "experience": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 4.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Experience"
+     },
+     "obstacles": {
+      "items": {
+       "type": "string",
+       "enum": [
+        "distracted",
+        "procrastinate",
+        "forget",
+        "struggle_to_understand",
+        "dont_know_where_to_start",
+        "need_practice",
+        "overwhelmed",
+        "not_enough_time",
+        "nothing"
+       ]
+      },
+      "type": "array",
+      "maxItems": 9,
+      "title": "Obstacles"
+     },
+     "helps": {
+      "items": {
+       "type": "string",
+       "enum": [
+        "practice_questions",
+        "solving_problems",
+        "reading_notes",
+        "flashcards",
+        "writing_summaries",
+        "building_projects",
+        "watching_explanations",
+        "not_sure"
+       ]
+      },
+      "type": "array",
+      "maxItems": 8,
+      "title": "Helps"
+     },
+     "extra": {
+      "type": "string",
+      "maxLength": 600,
+      "title": "Extra",
+      "default": ""
+     },
+     "feelings": {
+      "$ref": "#/components/schemas/FeelingsIn"
+     },
+     "today_minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 720.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Today Minutes"
+     },
+     "removed": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "maxItems": 40,
+      "title": "Removed"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "PlanFormIn"
+   },
+   "PlanIn": {
+    "properties": {
+     "subject": {
+      "type": "string",
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Subject"
+     },
+     "topic": {
+      "type": "string",
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Topic"
+     },
+     "goal": {
+      "type": "string",
+      "maxLength": 1500,
+      "title": "Goal",
+      "default": ""
+     },
+     "target_date": {
+      "type": "string",
+      "format": "date",
+      "title": "Target Date"
+     },
+     "mood": {
+      "type": "string",
+      "enum": [
+       "good",
+       "okay",
+       "tired"
+      ],
+      "title": "Mood",
+      "default": "okay"
+     },
+     "stress": {
+      "type": "string",
+      "enum": [
+       "low",
+       "medium",
+       "high"
+      ],
+      "title": "Stress",
+      "default": "medium"
+     },
+     "timezone": {
+      "type": "string",
+      "maxLength": 64,
+      "title": "Timezone",
+      "default": "UTC"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "subject",
+     "topic",
+     "target_date"
+    ],
+    "title": "PlanIn"
+   },
+   "PlanItem": {
+    "properties": {
+     "kind": {
+      "type": "string",
+      "enum": [
+       "study",
+       "break",
+       "long_break",
+       "review"
+      ],
+      "title": "Kind"
+     },
+     "topic": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Topic"
+     },
+     "difficulty": {
+      "anyOf": [
+       {
+        "type": "integer"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Difficulty"
+     },
+     "minutes": {
+      "type": "integer",
+      "title": "Minutes"
+     },
+     "start_minute": {
+      "type": "integer",
+      "title": "Start Minute"
+     },
+     "label": {
+      "type": "string",
+      "title": "Label"
+     }
+    },
+    "type": "object",
+    "required": [
+     "kind",
+     "minutes",
+     "start_minute",
+     "label"
+    ],
+    "title": "PlanItem"
+   },
+   "PlanPatch": {
+    "properties": {
+     "subject": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 80,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Subject"
+     },
+     "topic": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 120,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Topic"
+     },
+     "goal": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 1500
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Goal"
+     },
+     "target_date": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Target Date"
+     },
+     "roadmap": {
+      "anyOf": [
+       {
+        "items": {
+         "$ref": "#/components/schemas/RoadmapStep"
+        },
+        "type": "array",
+        "maxItems": 10
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Roadmap"
+     },
+     "timezone": {
+      "type": "string",
+      "maxLength": 64,
+      "title": "Timezone",
+      "default": "UTC"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "PlanPatch"
+   },
+   "PlanRequest": {
+    "properties": {
+     "category": {
+      "type": "string",
+      "maxLength": 40,
+      "title": "Category",
+      "default": "General"
+     },
+     "topics": {
+      "items": {
+       "$ref": "#/components/schemas/app__planner__TopicIn"
+      },
+      "type": "array",
+      "maxItems": 15,
+      "minItems": 1,
+      "title": "Topics"
+     },
+     "energy": {
+      "type": "integer",
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Energy",
+      "default": 3
+     },
+     "available_minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 600.0,
+        "minimum": 20.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Available Minutes"
+     },
+     "stress_risk": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "Low",
+         "Medium",
+         "High"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Stress Risk"
+     }
+    },
+    "type": "object",
+    "required": [
+     "topics"
+    ],
+    "title": "PlanRequest"
+   },
+   "PlanResponse": {
+    "properties": {
+     "category": {
+      "type": "string",
+      "title": "Category"
+     },
+     "mode": {
+      "type": "string",
+      "enum": [
+       "low",
+       "normal",
+       "high"
+      ],
+      "title": "Mode"
+     },
+     "block_minutes": {
+      "type": "integer",
+      "title": "Block Minutes"
+     },
+     "break_minutes": {
+      "type": "integer",
+      "title": "Break Minutes"
+     },
+     "topics": {
+      "items": {
+       "$ref": "#/components/schemas/RatedTopic"
+      },
+      "type": "array",
+      "title": "Topics"
+     },
+     "plan": {
+      "items": {
+       "$ref": "#/components/schemas/PlanItem"
+      },
+      "type": "array",
+      "title": "Plan"
+     },
+     "deferred": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "title": "Deferred"
+     },
+     "deferred_reason": {
+      "type": "string",
+      "title": "Deferred Reason",
+      "default": ""
+     },
+     "study_minutes": {
+      "type": "integer",
+      "title": "Study Minutes"
+     },
+     "total_minutes": {
+      "type": "integer",
+      "title": "Total Minutes"
+     },
+     "rating_source": {
+      "type": "string",
+      "enum": [
+       "student",
+       "offline_rules",
+       "mixed"
+      ],
+      "title": "Rating Source"
+     },
+     "note": {
+      "type": "string",
+      "title": "Note",
+      "default": ""
+     }
+    },
+    "type": "object",
+    "required": [
+     "category",
+     "mode",
+     "block_minutes",
+     "break_minutes",
+     "topics",
+     "plan",
+     "deferred",
+     "study_minutes",
+     "total_minutes",
+     "rating_source"
+    ],
+    "title": "PlanResponse"
+   },
+   "QuizIn": {
+    "properties": {
+     "count": {
+      "type": "integer",
+      "enum": [
+       5,
+       10,
+       15
+      ],
+      "title": "Count",
+      "default": 10
+     },
+     "difficulty": {
+      "type": "string",
+      "enum": [
+       "easy",
+       "medium",
+       "hard",
+       "mixed"
+      ],
+      "title": "Difficulty",
+      "default": "mixed"
+     },
+     "retry_attempt_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "uuid"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Retry Attempt Id"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "QuizIn"
+   },
+   "RatedTopic": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "difficulty": {
+      "type": "integer",
+      "title": "Difficulty"
+     },
+     "minutes": {
+      "type": "integer",
+      "title": "Minutes"
+     },
+     "source": {
+      "type": "string",
+      "enum": [
+       "student",
+       "offline_rules"
+      ],
+      "title": "Source"
+     },
+     "reason": {
+      "type": "string",
+      "title": "Reason",
+      "default": ""
+     }
+    },
+    "type": "object",
+    "required": [
+     "title",
+     "difficulty",
+     "minutes",
+     "source"
+    ],
+    "title": "RatedTopic"
+   },
+   "RecommendationOut": {
+    "properties": {
+     "ranked_tasks": {
+      "items": {
+       "$ref": "#/components/schemas/RecommendedTask"
+      },
+      "type": "array",
+      "title": "Ranked Tasks"
+     },
+     "top_task": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/RecommendedTask"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     },
+     "explanation": {
+      "type": "string",
+      "title": "Explanation"
+     },
+     "explanation_source": {
+      "type": "string",
+      "enum": [
+       "local_rules",
+       "no_tasks"
+      ],
+      "title": "Explanation Source"
+     },
+     "burnout_mode": {
+      "type": "boolean",
+      "title": "Burnout Mode"
+     },
+     "burnout_reason": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "low_energy",
+         "high_stress_risk"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Burnout Reason"
+     },
+     "ml_model": {
+      "anyOf": [
+       {
+        "type": "string"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Ml Model"
+     }
+    },
+    "type": "object",
+    "required": [
+     "ranked_tasks",
+     "top_task",
+     "explanation",
+     "explanation_source",
+     "burnout_mode"
+    ],
+    "title": "RecommendationOut",
+    "description": "The response returned by GET /recommend.\n\nEverything here is produced by LOCAL code: the heuristic ranks the tasks\n(app/heuristic.py), the trained task-fit model adds a probability\n(app/ml), and app/explain.py turns the numbers into a sentence. No\nexternal AI service is involved."
+   },
+   "RecommendedTask": {
+    "properties": {
+     "task": {
+      "$ref": "#/components/schemas/TaskOut"
+     },
+     "score": {
+      "type": "number",
+      "title": "Score"
+     },
+     "score_breakdown": {
+      "additionalProperties": {
+       "anyOf": [
+        {
+         "type": "number"
+        },
+        {
+         "type": "string"
+        }
+       ]
+      },
+      "type": "object",
+      "title": "Score Breakdown"
+     }
+    },
+    "type": "object",
+    "required": [
+     "task",
+     "score",
+     "score_breakdown"
+    ],
+    "title": "RecommendedTask"
+   },
+   "RenameIn": {
+    "properties": {
+     "name": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Name"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "name"
+    ],
+    "title": "RenameIn"
+   },
+   "ReplanApplyIn": {
+    "properties": {
+     "reason": {
+      "type": "string",
+      "enum": [
+       "energy",
+       "deadline",
+       "settings",
+       "behind",
+       "tasks",
+       "wellbeing",
+       "manual"
+      ],
+      "title": "Reason",
+      "default": "manual"
+     }
+    },
+    "type": "object",
+    "title": "ReplanApplyIn"
+   },
+   "ReplanIn": {
+    "properties": {
+     "confirm": {
+      "type": "boolean",
+      "title": "Confirm",
+      "default": false
+     },
+     "reason": {
+      "type": "string",
+      "enum": [
+       "energy",
+       "deadline",
+       "settings",
+       "behind",
+       "tasks",
+       "wellbeing",
+       "manual"
+      ],
+      "title": "Reason",
+      "default": "manual"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "ReplanIn"
+   },
+   "ResetPassword": {
+    "properties": {
+     "token": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 20,
+      "title": "Token"
+     },
+     "new_password": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 8,
+      "title": "New Password"
+     }
+    },
+    "type": "object",
+    "required": [
+     "token",
+     "new_password"
+    ],
+    "title": "ResetPassword"
+   },
+   "ReviewIn": {
+    "properties": {
+     "rating": {
+      "type": "string",
+      "enum": [
+       "easy",
+       "okay",
+       "difficult"
+      ],
+      "title": "Rating"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "rating"
+    ],
+    "title": "ReviewIn"
+   },
+   "RoadmapStep": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Title"
+     },
+     "text": {
+      "type": "string",
+      "maxLength": 260,
+      "title": "Text",
+      "default": ""
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "title"
+    ],
+    "title": "RoadmapStep"
+   },
+   "RunResult": {
+    "properties": {
+     "emails": {
+      "type": "integer",
+      "title": "Emails"
+     },
+     "tasks": {
+      "type": "integer",
+      "title": "Tasks"
+     },
+     "failures": {
+      "type": "integer",
+      "title": "Failures"
+     },
+     "mode": {
+      "type": "string",
+      "title": "Mode"
+     },
+     "skipped": {
+      "type": "integer",
+      "title": "Skipped",
+      "default": 0
+     }
+    },
+    "type": "object",
+    "required": [
+     "emails",
+     "tasks",
+     "failures",
+     "mode"
+    ],
+    "title": "RunResult"
+   },
+   "SessionFeedbackIn": {
+    "properties": {
+     "plan_session_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 64
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Plan Session Id"
+     },
+     "task_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 64
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Task Id"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "done",
+       "partial",
+       "stopped",
+       "skipped"
+      ],
+      "title": "Status",
+      "default": "done"
+     },
+     "felt": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "easy",
+         "okay",
+         "difficult"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Felt"
+     },
+     "planned_minutes": {
+      "type": "integer",
+      "maximum": 600.0,
+      "minimum": 0.0,
+      "title": "Planned Minutes",
+      "default": 0
+     },
+     "actual_minutes": {
+      "type": "integer",
+      "maximum": 600.0,
+      "minimum": 0.0,
+      "title": "Actual Minutes",
+      "default": 0
+     },
+     "focus": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Focus"
+     },
+     "felt_difficulty": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Felt Difficulty"
+     },
+     "energy_after": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Energy After"
+     },
+     "length_feel": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "short",
+         "right",
+         "long"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Length Feel"
+     },
+     "task_done": {
+      "type": "boolean",
+      "title": "Task Done",
+      "default": false
+     },
+     "remaining_minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 6000.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Remaining Minutes"
+     }
+    },
+    "type": "object",
+    "title": "SessionFeedbackIn"
+   },
+   "SessionIn": {
+    "properties": {
+     "kind": {
+      "type": "string",
+      "enum": [
+       "programming",
+       "mathematics",
+       "writing",
+       "exam",
+       "reading",
+       "presentation",
+       "data",
+       "admin",
+       "general"
+      ],
+      "title": "Kind"
+     },
+     "minutes": {
+      "type": "integer",
+      "maximum": 600.0,
+      "minimum": 5.0,
+      "title": "Minutes"
+     },
+     "completed": {
+      "type": "boolean",
+      "title": "Completed"
+     },
+     "focus": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Focus"
+     }
+    },
+    "type": "object",
+    "required": [
+     "kind",
+     "minutes",
+     "completed"
+    ],
+    "title": "SessionIn"
+   },
+   "SmartPlanIn": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Title"
+     },
+     "details": {
+      "type": "string",
+      "maxLength": 2000,
+      "title": "Details",
+      "default": ""
+     },
+     "deadline": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Deadline"
+     },
+     "deadline_hour": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 23.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Deadline Hour"
+     },
+     "today": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Today"
+     },
+     "daily_minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 720.0,
+        "minimum": 15.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Daily Minutes"
+     },
+     "today_minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 720.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Today Minutes"
+     },
+     "energy": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Energy"
+     },
+     "stress_risk": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "Low",
+         "Medium",
+         "High"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Stress Risk"
+     },
+     "answers": {
+      "additionalProperties": true,
+      "type": "object",
+      "title": "Answers"
+     },
+     "skipped": {
+      "items": {
+       "type": "string"
+      },
+      "type": "array",
+      "maxItems": 8,
+      "title": "Skipped"
+     },
+     "skills": {
+      "additionalProperties": {
+       "type": "integer"
+      },
+      "propertyNames": {
+       "enum": [
+        "programming",
+        "mathematics",
+        "writing",
+        "exam",
+        "reading",
+        "presentation",
+        "data",
+        "admin",
+        "general"
+       ]
+      },
+      "type": "object",
+      "title": "Skills"
+     },
+     "history": {
+      "anyOf": [
+       {
+        "$ref": "#/components/schemas/HistoryIn"
+       },
+       {
+        "type": "null"
+       }
+      ]
+     }
+    },
+    "type": "object",
+    "required": [
+     "title"
+    ],
+    "title": "SmartPlanIn"
+   },
+   "SubjectIn": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "maxLength": 40,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Id"
+     },
+     "name": {
+      "type": "string",
+      "maxLength": 60,
+      "minLength": 1,
+      "title": "Name"
+     },
+     "experience": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 4.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Experience"
+     },
+     "topics": {
+      "items": {
+       "$ref": "#/components/schemas/app__assist__formplan__TopicIn"
+      },
+      "type": "array",
+      "maxItems": 40,
+      "title": "Topics"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "id",
+     "name"
+    ],
+    "title": "SubjectIn"
+   },
+   "SubmitIn": {
+    "properties": {
+     "difficulty": {
+      "type": "string",
+      "enum": [
+       "easy",
+       "medium",
+       "hard",
+       "mixed"
+      ],
+      "title": "Difficulty",
+      "default": "mixed"
+     },
+     "answers": {
+      "items": {
+       "$ref": "#/components/schemas/AnswerIn"
+      },
+      "type": "array",
+      "maxItems": 15,
+      "minItems": 1,
+      "title": "Answers"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "answers"
+    ],
+    "title": "SubmitIn"
+   },
+   "SubtaskIn": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Title"
+     },
+     "share_percent": {
+      "type": "integer",
+      "maximum": 100.0,
+      "minimum": 1.0,
+      "title": "Share Percent"
+     },
+     "how": {
+      "type": "string",
+      "maxLength": 300,
+      "title": "How",
+      "default": ""
+     }
+    },
+    "type": "object",
+    "required": [
+     "title",
+     "share_percent"
+    ],
+    "title": "SubtaskIn"
+   },
+   "TaskCreate": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "maxLength": 200,
+      "minLength": 1,
+      "title": "Title"
+     },
+     "description": {
+      "type": "string",
+      "maxLength": 2000,
+      "title": "Description",
+      "default": ""
+     },
+     "category": {
+      "type": "string",
+      "maxLength": 100,
+      "title": "Category",
+      "default": "general"
+     },
+     "difficulty": {
+      "type": "integer",
+      "maximum": 5.0,
+      "minimum": 1.0,
+      "title": "Difficulty",
+      "default": 3
+     },
+     "deadline": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Deadline"
+     }
+    },
+    "type": "object",
+    "required": [
+     "title",
+     "deadline"
+    ],
+    "title": "TaskCreate"
+   },
+   "TaskOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "title": {
+      "type": "string",
+      "title": "Title"
+     },
+     "description": {
+      "type": "string",
+      "title": "Description"
+     },
+     "category": {
+      "type": "string",
+      "title": "Category"
+     },
+     "difficulty": {
+      "type": "integer",
+      "title": "Difficulty"
+     },
+     "deadline": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Deadline"
+     },
+     "status": {
+      "type": "string",
+      "enum": [
+       "pending",
+       "completed"
+      ],
+      "title": "Status"
+     },
+     "created_at": {
+      "type": "string",
+      "format": "date-time",
+      "title": "Created At"
+     },
+     "completed_at": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Completed At"
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "title",
+     "description",
+     "category",
+     "difficulty",
+     "deadline",
+     "status",
+     "created_at"
+    ],
+    "title": "TaskOut"
+   },
+   "TaskPatch": {
+    "properties": {
+     "title": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 160,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "details": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 400
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Details"
+     },
+     "due_date": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Due Date"
+     },
+     "start_time": {
+      "anyOf": [
+       {
+        "type": "string",
+        "pattern": "^([01]\\d|2[0-3]):[0-5]\\d$"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Start Time"
+     },
+     "clear_time": {
+      "type": "boolean",
+      "title": "Clear Time",
+      "default": false
+     },
+     "minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 480.0,
+        "minimum": 5.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Minutes"
+     },
+     "done": {
+      "anyOf": [
+       {
+        "type": "boolean"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Done"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "TaskPatch"
+   },
+   "TaskPlanPatch": {
+    "properties": {
+     "priority": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 3.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Priority"
+     },
+     "remaining_minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 6000.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Remaining Minutes"
+     }
+    },
+    "type": "object",
+    "title": "TaskPlanPatch"
+   },
+   "TaskUpdate": {
+    "properties": {
+     "title": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200,
+        "minLength": 1
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "description": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 2000
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Description"
+     },
+     "category": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 100
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Category"
+     },
+     "difficulty": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Difficulty"
+     },
+     "deadline": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date-time"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Deadline"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "pending",
+         "completed"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     }
+    },
+    "type": "object",
+    "title": "TaskUpdate"
+   },
+   "Token": {
+    "properties": {
+     "access_token": {
+      "type": "string",
+      "title": "Access Token"
+     },
+     "token_type": {
+      "type": "string",
+      "const": "bearer",
+      "title": "Token Type",
+      "default": "bearer"
+     }
+    },
+    "type": "object",
+    "required": [
+     "access_token"
+    ],
+    "title": "Token"
+   },
+   "TopicDetails": {
+    "properties": {
+     "features_left": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 200.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Features Left"
+     },
+     "coding_started": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "yes",
+         "no",
+         "partly"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Coding Started"
+     },
+     "testing_done": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "yes",
+         "no",
+         "partly"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Testing Done"
+     },
+     "words_required": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 50000.0,
+        "minimum": 50.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Words Required"
+     },
+     "words_written": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 50000.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Words Written"
+     },
+     "research_done": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "yes",
+         "no",
+         "partly"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Research Done"
+     },
+     "chapters": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 100.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Chapters"
+     },
+     "hard_topics": {
+      "type": "string",
+      "maxLength": 200,
+      "title": "Hard Topics",
+      "default": ""
+     },
+     "revision_started": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "yes",
+         "no",
+         "partly"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Revision Started"
+     },
+     "slides": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 200.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Slides"
+     },
+     "content_ready": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "yes",
+         "no",
+         "partly"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Content Ready"
+     },
+     "rehearsal_needed": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "yes",
+         "no"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Rehearsal Needed"
+     },
+     "questions": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 500.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Questions"
+     },
+     "pages": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 2000.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Pages"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "title": "TopicDetails",
+    "description": "Optional follow-up answers. Only the ones that belong to the chosen task type are ever shown."
+   },
+   "UnderstandFields": {
+    "properties": {
+     "title": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 200
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Title"
+     },
+     "deadline_date": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Deadline Date"
+     },
+     "deadline_hour": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 23.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Deadline Hour"
+     },
+     "kind": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "programming",
+         "mathematics",
+         "writing",
+         "exam",
+         "reading",
+         "presentation",
+         "data",
+         "admin",
+         "general"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Kind"
+     },
+     "felt_hard": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Felt Hard"
+     },
+     "size": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "tiny",
+         "small",
+         "medium",
+         "large",
+         "huge"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Size"
+     }
+    },
+    "type": "object",
+    "title": "UnderstandFields"
+   },
+   "UnderstandIn": {
+    "properties": {
+     "text": {
+      "type": "string",
+      "maxLength": 3000,
+      "title": "Text",
+      "default": ""
+     },
+     "fields": {
+      "$ref": "#/components/schemas/UnderstandFields"
+     }
+    },
+    "type": "object",
+    "title": "UnderstandIn"
+   },
+   "UserLogin": {
+    "properties": {
+     "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email"
+     },
+     "password": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 1,
+      "title": "Password"
+     }
+    },
+    "type": "object",
+    "required": [
+     "email",
+     "password"
+    ],
+    "title": "UserLogin"
+   },
+   "UserOut": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "format": "uuid",
+      "title": "Id"
+     },
+     "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email"
+     },
+     "display_name": {
+      "type": "string",
+      "title": "Display Name"
+     },
+     "email_alerts": {
+      "type": "boolean",
+      "title": "Email Alerts",
+      "default": true
+     }
+    },
+    "type": "object",
+    "required": [
+     "id",
+     "email",
+     "display_name"
+    ],
+    "title": "UserOut"
+   },
+   "UserRegister": {
+    "properties": {
+     "email": {
+      "type": "string",
+      "format": "email",
+      "title": "Email"
+     },
+     "password": {
+      "type": "string",
+      "maxLength": 128,
+      "minLength": 8,
+      "title": "Password"
+     },
+     "display_name": {
+      "type": "string",
+      "maxLength": 100,
+      "minLength": 1,
+      "title": "Display Name"
+     }
+    },
+    "type": "object",
+    "required": [
+     "email",
+     "password",
+     "display_name"
+    ],
+    "title": "UserRegister"
+   },
+   "ValidationError": {
+    "properties": {
+     "loc": {
+      "items": {
+       "anyOf": [
+        {
+         "type": "string"
+        },
+        {
+         "type": "integer"
+        }
+       ]
+      },
+      "type": "array",
+      "title": "Location"
+     },
+     "msg": {
+      "type": "string",
+      "title": "Message"
+     },
+     "type": {
+      "type": "string",
+      "title": "Error Type"
+     },
+     "input": {
+      "title": "Input"
+     },
+     "ctx": {
+      "type": "object",
+      "title": "Context"
+     }
+    },
+    "type": "object",
+    "required": [
+     "loc",
+     "msg",
+     "type"
+    ],
+    "title": "ValidationError"
+   },
+   "app__assist__formplan__TopicIn": {
+    "properties": {
+     "id": {
+      "type": "string",
+      "maxLength": 40,
+      "minLength": 1,
+      "pattern": "^[A-Za-z0-9_-]+$",
+      "title": "Id"
+     },
+     "task_id": {
+      "anyOf": [
+       {
+        "type": "string",
+        "maxLength": 64
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Task Id"
+     },
+     "name": {
+      "type": "string",
+      "maxLength": 120,
+      "minLength": 1,
+      "title": "Name"
+     },
+     "type": {
+      "type": "string",
+      "enum": [
+       "exam",
+       "assignment",
+       "project",
+       "report",
+       "presentation",
+       "homework",
+       "revision",
+       "reading",
+       "other"
+      ],
+      "title": "Type",
+      "default": "other"
+     },
+     "progress": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "none",
+         "some",
+         "half",
+         "most",
+         "done"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Progress"
+     },
+     "difficulty": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Difficulty"
+     },
+     "understanding": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 4.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Understanding"
+     },
+     "description": {
+      "type": "string",
+      "maxLength": 600,
+      "title": "Description",
+      "default": ""
+     },
+     "deadline": {
+      "anyOf": [
+       {
+        "type": "string",
+        "format": "date"
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Deadline"
+     },
+     "deadline_hour": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 23.0,
+        "minimum": 0.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Deadline Hour"
+     },
+     "priority": {
+      "type": "integer",
+      "maximum": 3.0,
+      "minimum": 1.0,
+      "title": "Priority",
+      "default": 2
+     },
+     "details": {
+      "$ref": "#/components/schemas/TopicDetails"
+     },
+     "status": {
+      "anyOf": [
+       {
+        "type": "string",
+        "enum": [
+         "pending",
+         "completed"
+        ]
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Status"
+     }
+    },
+    "additionalProperties": false,
+    "type": "object",
+    "required": [
+     "id",
+     "name"
+    ],
+    "title": "TopicIn"
+   },
+   "app__planner__TopicIn": {
+    "properties": {
+     "title": {
+      "type": "string",
+      "maxLength": 80,
+      "minLength": 1,
+      "title": "Title"
+     },
+     "difficulty": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 5.0,
+        "minimum": 1.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Difficulty"
+     },
+     "minutes": {
+      "anyOf": [
+       {
+        "type": "integer",
+        "maximum": 240.0,
+        "minimum": 10.0
+       },
+       {
+        "type": "null"
+       }
+      ],
+      "title": "Minutes"
+     }
+    },
+    "type": "object",
+    "required": [
+     "title"
+    ],
+    "title": "TopicIn"
+   }
+  },
+  "securitySchemes": {
+   "HTTPBearer": {
+    "type": "http",
+    "scheme": "bearer"
+   }
+  }
+ }
+}
